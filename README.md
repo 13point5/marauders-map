@@ -25,3 +25,13 @@ Click “Mischief Managed” or the cover to open. Voice activation appears when
 ## Validation
 
 Browser checks cover opening/folding, all five destinations, named footsteps, zoom buttons, drag and wheel panning, keyboard navigation, and layouts at 320×568, 390×844, 768×1024, 844×390, and 1440×1000. Measured inscriptions stay within their wall capacities. Camera tests cover pinch scaling, pointer anchoring, centered overview margins, fit, and boundary clamping. Physical touchscreen pinch and microphone recognition have not been tested on real hardware.
+
+## Current focus: one stair tower
+
+The homepage is now a single-shape study from the user's IMG_5431 photograph. The previous portfolio experience is retained in `app/portfolio-map.tsx` for later integration, and is not shown in this study.
+
+`public/study/stair-tower.svg` contains only filled ink contours. It is a vector tracing of the supplied artwork, not a newly typeset tower or a generative building system. There are no added circular or rectangular outlines. The photo, drawing, and overlay modes share the same image coordinates. Pan/zoom remains available.
+
+To reproduce the study, decode IMG_5431 at full resolution to JPEG with orientation metadata, then run `python3 scripts/trace-tower.py /path/to/decoded-photo.jpg` and `node scripts/verify-tower.mjs`. The extraction requires Pillow, NumPy, and OpenCV; the verification uses the existing Sharp installation. These are offline authoring tools, not site runtime dependencies.
+
+The verifier rasterizes the actual SVG and compares it to the isolated dark-ink mask at 1010×1025 pixels. It checks retention, precision, intersection-over-union, and absence of added geometric border primitives. This is a tracing-fidelity check, not an independent perceptual-quality score. The original photo overlay and enlarged browser screenshots provide the visual check. Generated masks and reports are in the ignored `outputs/study` folder.
