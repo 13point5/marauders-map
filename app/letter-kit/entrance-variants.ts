@@ -73,8 +73,8 @@ export const designs:Record<EntranceVariant,{letters:Letter[];lines:number[][][]
      915
     ],
     [
-     887,
-     961
+     889,
+     965
     ]
    ],
    [
@@ -351,5 +351,13 @@ export function buildEntrance(kit:Glyph[],variant:EntranceVariant,exitLetter?:Le
  const design=designs[variant];
  const letters:Piece[]=design.letters.map(([id,x,y,angle,height])=>{const g=kit.find(g=>g.id===id)!,scale=height/100;return {kind:'doorway',glyph:id,d:g.d,bounds:letterBox(x,y,g.width*scale,height,angle*Math.PI/180,6),transform:`translate(${x} ${y}) rotate(${angle}) scale(${scale}) translate(${-g.width/2} -50)`}});
  const weight=1.65;
- return [...design.lines.map((points,i)=>({kind:'doorway' as const,d:variant==='quiet'&&i===2&&exitLetter?joinedQuillLine(placeStrokePort(strokePorts.capitals.A,exitLetter),points.slice(1),weight):quillLine(points,weight)})),...letters];
+ return [...design.lines.map((points,i)=>({kind:'doorway' as const,joinId:i===1?'inner-return':undefined,d:variant==='quiet'&&i===2&&exitLetter?joinedQuillLine(placeStrokePort(strokePorts.capitals.A,exitLetter),points.slice(1),weight):quillLine(points,weight)})),...letters];
+}
+
+// This junction is deliberately art-directed. Both strokes use the resolved
+// stair endpoint in map coordinates, with shared ink instead of edge contact.
+export function joinEntranceReturn(variant:EntranceVariant,stair:{a:{x:number;y:number};b:{x:number;y:number}},width:number):string{
+ const {a,b}=stair,length=Math.hypot(b.x-a.x,b.y-a.y),dx=(b.x-a.x)/length,dy=(b.y-a.y)/length;
+ const root=[b.x-dx*6,b.y-dy*6];
+ return quillLine([root,[b.x,b.y],...designs[variant].lines[1].slice(1)],1.65,width);
 }

@@ -1,8 +1,8 @@
-import {buildEntrance,type EntranceVariant} from './entrance-variants.ts';
+import {buildEntrance,joinEntranceReturn,type EntranceVariant} from './entrance-variants.ts';
 import type {Glyph} from './layout';
 import {clearStair,letterBox,type KeepOut} from './clearance.ts';
-export type Piece={kind:'capital'|'cursive'|'stair'|'doorway';d:string;transform?:string;glyph?:string;strokeWidth?:number;fill?:string;bounds?:KeepOut};
-type Layout={capitals:{glyph:string;band:string;joinId?:string;x:number;y:number;angle:number;width:number;height:number}[];stairs:{a:number[];b:number[];width:number}[];entrance:{letters:{family:string;glyph:string;x:number;y:number;angle:number;width:number;height:number}[];connectors:string[]}};
+export type Piece={kind:'capital'|'cursive'|'stair'|'doorway';d:string;transform?:string;glyph?:string;strokeWidth?:number;fill?:string;bounds?:KeepOut;joinId?:string};
+type Layout={capitals:{glyph:string;band:string;joinId?:string;x:number;y:number;angle:number;width:number;height:number}[];stairs:{a:number[];b:number[];width:number;joinId?:string}[];entrance:{letters:{family:string;glyph:string;x:number;y:number;angle:number;width:number;height:number}[];connectors:string[]}};
 type Cursive={unitsPerEm:number;baseline:number;glyphs:Record<string,{d:string;advance:number;bounds:number[]}>};
 // Layout is measured from the reference. Letter contours come from reusable kits.
 export function reconstructTower(kit:Glyph[],cursive:Cursive,layout:Layout,variant:EntranceVariant='quiet'):Piece[]{
@@ -31,7 +31,11 @@ export function reconstructTower(kit:Glyph[],cursive:Cursive,layout:Layout,varia
  const boxes=pieces.flatMap(p=>p.bounds?[p.bounds]:[]);
  for(const s of layout.stairs){
   const segment=clearStair({x:s.a[0],y:s.a[1]},{x:s.b[0],y:s.b[1]},boxes);
-  if(segment)pieces.push({kind:'stair',d:`M${segment.a.x} ${segment.a.y}L${segment.b.x} ${segment.b.y}`,strokeWidth:s.width,fill:'none'});
+  if(segment&&s.joinId==='inner-return'){
+   const entrance=pieces.find(p=>p.joinId==='inner-return'&&p.kind==='doorway');
+   if(entrance)entrance.d=joinEntranceReturn(variant,segment,s.width);
+  }
+  if(segment)pieces.push({kind:'stair',joinId:s.joinId,d:`M${segment.a.x} ${segment.a.y}L${segment.b.x} ${segment.b.y}`,strokeWidth:s.width,fill:'none'});
  }
  const round=(s:string)=>s.replace(/-?\d*\.?\d+(?:e[+-]?\d+)?/gi,n=>String(Number(Number(n).toFixed(6))));
  return pieces.map(p=>({...p,d:p.kind==='stair'?round(p.d):p.d,...(p.transform?{transform:round(p.transform)}:{})}));
