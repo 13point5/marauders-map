@@ -16,7 +16,7 @@ for i in range(1,n):
  ids=np.unique(render_labels[core]);ids=ids[ids!=0];checked+=1
  if len(ids)!=1:broken.append((i,len(ids)))
 assert not broken,broken
-m=json.loads((root/'app/letter-kit/reference-section.json').read_text());scale=m['sourceOrientedSize'][0]/1650
+m=json.loads((root/'app/map-sections/reference-section.json').read_text());scale=m['sourceOrientedSize'][0]/1650
 x,y=[round((v-o)*scale) for v,o in zip([1090,550],m['crop1650'][:2])];radius=round(50*scale)
 empty=not r[y-radius:y+radius,x-radius:x+radius].any();assert empty
 report={'connectedInkComponentsChecked':checked,'brokenConnections':broken,'centralVoidEmpty':bool(empty)}

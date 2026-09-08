@@ -53,5 +53,5 @@ svg=f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" 
 (out/'reference-section.svg').write_text(svg);crop.save(out/'reference-section-photo.jpg',quality=95)
 work=root/'outputs/reference-section';work.mkdir(exist_ok=True,parents=True);cv2.imwrite(str(work/'source-ink-mask.png'),mask)
 metadata={'source':'IMG_5431.HEIC','method':'Source-traced vector contours; authored section boundary and paper-stain exclusions','sourceOrientedSize':list(im.size),'crop1650':box,'width':w,'height':h,'threshold':98,'outline1650':outline,'emptyInterior1650':exclusions,'touchingPaperSpot1650':[1234.5,911.5,5.8,5.3],'removedPaperSpots1650':paper_spots,'componentCount':len(parts),'parts':[{'id':p['id'],'bounds':p['bounds']} for p in parts]}
-(root/'app/letter-kit/reference-section.json').write_text(json.dumps(metadata,indent=2)+'\n')
+(root/'app/map-sections/reference-section.json').write_text(json.dumps(metadata,indent=2)+'\n')
 print(json.dumps({'width':w,'height':h,'components':len(parts),'svgBytes':len(svg)}))

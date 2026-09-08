@@ -1,5 +1,5 @@
 import sharp from 'sharp';import {readFile,writeFile} from 'node:fs/promises';import assert from 'node:assert/strict';
-const meta=JSON.parse(await readFile('app/letter-kit/reference-section.json','utf8'));
+const meta=JSON.parse(await readFile('app/map-sections/reference-section.json','utf8'));
 const svg=await readFile('public/study/reference-section.svg');
 const render=await sharp(svg).ensureAlpha().extractChannel('alpha').raw().toBuffer();
 const source=await sharp('outputs/reference-section/source-ink-mask.png').extractChannel(0).raw().toBuffer();

@@ -1,63 +1,50 @@
-# Sriraam’s map lettering study
+# Sriraam’s map
 
-The homepage presents a reconstructed stair tower, two independently designed buildings, the accepted reference trace, and complete reusable lettering kits. The earlier personal portfolio map is retained in `app/portfolio-map.tsx` for later integration.
+An interactive, source-traced study of the Marauder’s Map: the approved tower and turning passage, the neighbouring Clock Tower and halls, and the stairwell/turret. All three sections come from the user’s IMG_5431 photograph and share its original coordinates. Drawing, Photograph, and Overlay views support close comparison. Drag, wheel scrolling, pinch, zoom buttons, and keyboard navigation explore the map on different screen sizes.
 
-## Complete lettering kits
+## What the artwork is
 
-**Map Capitals** contains A–Z and two alternate forms (28 vector pieces). Twelve sampled forms from IMG_5431 are retained. The missing capitals are drawn with a broad pen in a matching style; A and O were also redrawn to repair a clipped counter and an accidental attached stroke in the earlier extraction.
+The map is SVG contour artwork, **not live text or a font**. Python/Pillow/OpenCV isolate photographed ink within authored section boundaries and trace it into editable filled paths. Letterforms and their joins come from the source. No automatic gap closing, stroke thinning, invented interiors, or geometric lettering layout is applied. The newer sections select whole connected ink components to avoid severing strokes at scope boundaries. Inspected paper stains are excluded explicitly.
 
-**Map Script** contains uppercase A–Z and lowercase a–z, plus a space. All 52 letter contours are independently authored pen paths, informed by the low x-height, slant, loops, and weight variation visible across the user's IMG_5430, IMG_5431, IMG_5432, and IMG_5433 photos. They are a designed companion alphabet, not exact extractions of every handwritten source character. Unseen or ambiguous letters are inferred in the same style. No stock italic font supplies this kit.
+This method reproduces existing structures. Creating genuinely new architecture in the same style requires composing and drawing new vector lettering/joins; tracing does not generate a new design. The earlier generated font kits and invented layouts have been removed from the current source. They remain recoverable through Git history.
 
-The Letter kit screen has three alphabet views and downloads for `public/fonts/map-capitals.ttf` and `public/fonts/map-script.ttf`. These are TrueType exports of the same outlines used in the SVG artwork. The capital font contains uppercase letters; the script font contains both cases. They are alphabet fonts, without numerals, punctuation, or advanced contextual ligatures.
+Pretext is not used and its dependency has been removed. UI labels use local IM Fell English fonts, independently of the map artwork.
 
-The JSON outlines are in `app/letter-kit/glyphs.json` and `app/letter-kit/cursive-glyphs.json`. The authored pen recipes and the nib-to-contour conversion are in `scripts/build-complete-kits.py`. `scripts/export-map-fonts.py` exports the fonts without reading a source font file.
+## Stack and source layout
 
-## Tower reconstruction and clearance
+- React and TypeScript; Vinext/Vite; CSS; hosted through Sites/Cloudflare.
+- `app/map-sections/`: section metadata, source-coordinate framing, and SVG composition.
+- `public/study/`: current vector artwork and matching photograph crops.
+- `app/map-camera.ts` / `app/use-map-navigation.ts`: responsive pan, pinch, wheel, and keyboard navigation.
+- `scripts/sections.json`: authored boundaries and paper-stain exclusions for the new sections.
+- `scripts/trace-reference-section.py`: generator for the unchanged approved tower.
+- `scripts/trace-map-sections.py`: generator for the neighbouring structures.
 
-The reconstructed tower uses 71 capital placements, 78 cursive placements, 62 stair strokes, and three selectable entrance designs assembled from shared capital pieces and filled quill strokes. `reference-layout.json` records measured capital positions and stair geometry. `reconstruction.ts` assembles actual glyph outlines; its cursive baseline is an invisible positioning guide.
+The user's original HEIC files remain outside the repository. Coordinates use EXIF-oriented portrait photos normalized to 1650 pixels wide. The source used here is 4284×5712 after orientation. Supply an equivalent full-resolution PNG/JPEG to regenerate. Preserve orientation; a raw unrotated HEIC decode will produce incorrect crops. The combined comparison crop covers `[185,335,1330,1695]` in normalized photo coordinates.
 
-Each letter has a padded, rotated bound. `clearance.ts` clips each stair segment against those bounds and retains its longest clear run. This accounts for ascenders, descenders, slant, line width, and rounded line caps. Letters are not covered with opaque patches, and no visible circular boundary is added.
-
-Original trace and Overlay expose the unchanged accepted `public/study/stair-tower.svg` for comparison. Rebuilt and Show parts contain independent vector pieces and no reference image. The entrance now has three design alternatives: **Quiet returns** (recommended, restrained lettering and longer strokes), **Lettered jambs** (more capitals and shorter strokes), and **Stepped passage** (a deeper folded return). Each uses exactly the capital outlines from the tower kit with uniform scaling, preserving the letter proportions. These are design interpretations, not claims of exact photo reconstruction. The earlier fitted entrance recipe remains in `reference-layout.json` for provenance.
-
-`entrance-variants.ts` owns the alternatives and the quill renderer. The renderer follows straight segments with small quadratic corner turns, then constructs a filled ink ribbon. Width responds to a fixed broad-nib angle and modest pressure variation; the centreline is not wobbled. Stroke ends meet selected glyph terminals. The interface switches between an enlarged entrance and the whole tower, so each option can be judged in context.
-
-The complete tower tracing remains tagged `accepted-tower-study` at `a0a356c20cd77ea1d4aa9cfde0ced423b7af152e`. The original tracing's 99.8% ink agreement is not an accuracy claim for the reconstruction or these new alphabets.
-
-The observatory and gallery use independent geometry in `app/letter-kit/layout.ts`. Their lettering can be rearranged without changing the building plan. Pan, pinch, wheel, zoom buttons, and keyboard navigation remain available throughout the study.
-
-## Development and verification
+## Development
 
 ```sh
 npm install
 npm run dev
+npm run test:map
 npx tsc --noEmit
-node --experimental-strip-types --test tests/*.test.mjs
 npm run build
 ```
 
-To regenerate the completed alphabets and exports from the checked-in sampled pieces:
+## Reproduce and verify the ink
+
+Authoring requires Python with Pillow, NumPy, and OpenCV; verification uses Sharp (available through the current dependency tree). These tools are not shipped to the browser.
 
 ```sh
-python3 scripts/build-complete-kits.py
-python3 scripts/export-map-fonts.py
-node scripts/render-kits.mjs
-node --experimental-strip-types scripts/render-reconstruction.mjs
-node --experimental-strip-types scripts/verify-letter-clearance.mjs quiet
-node --experimental-strip-types scripts/verify-letter-clearance.mjs lettered
-node --experimental-strip-types scripts/verify-letter-clearance.mjs stepped
+python3 scripts/trace-reference-section.py /path/to/oriented-photo.png
+python3 scripts/trace-map-sections.py /path/to/oriented-photo.png
+node scripts/verify-reference-section.mjs
+python3 scripts/verify-reference-topology.py
+node scripts/verify-map-sections.mjs
+python3 scripts/verify-map-topology.py
 ```
 
-Offline authoring uses NumPy, OpenCV, fontTools, and Sharp. These are not browser dependencies. Generated proof sheets and reports go into ignored `outputs/alphabet` and `outputs/reconstruction` folders.
+Ignored `outputs/` contains cleaned source masks, proof images, and verification reports. Ink intersection-over-union measures the vector conversion against the cleaned source mask, not against the unprocessed photograph. The topology check detects disconnected strokes and newly merged components introduced during vectorization. Browser checks cover comparison controls, section framing, scrolling/zoom, and responsive layouts; physical touchscreen gestures still need a device check.
 
-The raster clearance verifier renders actual letter paths and stair strokes separately at 1010×1025, including line width and round caps. The current result is **zero overlapping ink pixels and zero stair pixels within three pixels of letter ink**. Geometric tests separately exercise rotated obstacles, endpoint contact, internal crossings, fully blocked segments, all 62 rendered stairs, alphabet completeness, glyph reuse, floor-plan separation, and camera math. All 23 tests pass. All three variants retain the shared capital outlines and uniform scaling, and pass the raster stair-clearance check.
-
-Browser inspection covers the alphabet views and reconstructed tower from the preceding updates, plus all three entrance variants in detail and at whole-tower scale. The variant controls and detail framing are checked at desktop and 390×844 phone sizes. Physical touchscreen pinch remains untested on real hardware.
-
-The original extraction can be reproduced with `scripts/trace-tower.py`, `scripts/extract-letter-kit.py`, and the reconstruction-fitting scripts. Running the older capital extraction resets that kit to its initial partial alphabet; rerun `build-complete-kits.py` and the font exporter afterward. `fit-reference-details.py` only owns stair and doorway geometry; it no longer replaces the custom script kit.
-
-## Reference and retained portfolio content
-
-Personal content comes from https://www.sriraam.me/ (accessed 7 September 2026). The map study is based on the user's four replica photographs. Original Marauder’s Map artwork belongs to its respective rights holders. Prior cover reference: https://minalima.com/shop-wizarding-world/shop-by-collection/the-marauders-map/ . UI labels still use locally served IM Fell English and Cormorant Garamond; these are separate from the custom map-lettering kits.
-
-The retained portfolio uses Pretext for text measurement. The custom letter-outline construction and stair clearance do not depend on Pretext.
+Original Marauder’s Map artwork belongs to its respective rights holders. Source photographs were supplied by the user. The former portfolio content and obsolete font experiments were removed from the working tree at the user’s request.
