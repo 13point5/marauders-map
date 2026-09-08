@@ -19,7 +19,7 @@ test('replacing a reusable glyph updates every occurrence without changing place
  assert.ok(before.filter(p=>p.kind==='capital'&&p.glyph==='A').length>1);
  for(let i=0;i<before.length;i++){
   assert.equal(before[i].transform,after[i].transform);
-  if(before[i].kind==='capital'&&before[i].glyph==='A')assert.notEqual(before[i].d,after[i].d);
+  if(before[i].glyph==='A'&&before[i].d===kit.find(g=>g.id==='A').d)assert.notEqual(before[i].d,after[i].d);
   else assert.deepEqual(before[i],after[i]);
  }
 });

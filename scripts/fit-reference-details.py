@@ -1,5 +1,5 @@
 """Fit radial stair segments; the independent complete-kit script owns lettering.
-Run after fit-reconstruction.py. Doorways below are manually drawn editable paths.
+Run after fit-reconstruction.py. Entrance letters and connectors are maintained separately.
 Requires OpenCV, NumPy, and SciPy; none are browser dependencies.
 """
 import cv2, numpy as np, json
@@ -31,10 +31,6 @@ for peak in peaks:
  a,b=positions[0],positions[-1]
  stairs.append({'a':[round(x[a],2),round(y[a],2)],'b':[round(x[b],2),round(y[b],2)],'width':round(2.8+score*1.5,2)})
 path=root/'app/letter-kit/reference-layout.json';layout=json.loads(path.read_text());layout['stairs']=stairs
-layout['doorways']=[
- 'M608 984 Q640 952 671 933 Q693 965 717 1007 L665 1018 Q659 1008 649 1005 Q641 1004 641 1015 Q640 1028 627 1025 Q619 1024 615 1034',
- 'M800 874 Q777 880 759 898 L783 964 M777 960 L850 922 Q846 940 866 947 L893 969',
- 'M864 934 Q861 952 884 956 L903 986 Q883 986 864 979 Q882 1001 908 1003 L920 1040 L989 1025 Q985 1010 970 1011 L949 966 Q935 967 931 961'
-]
+layout.pop('doorways',None)
 path.write_text(json.dumps(layout,separators=(',',':')))
 print(len(stairs),'radial stair segments')

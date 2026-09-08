@@ -14,11 +14,13 @@ The JSON outlines are in `app/letter-kit/glyphs.json` and `app/letter-kit/cursiv
 
 ## Tower reconstruction and clearance
 
-The reconstructed tower uses 71 capital placements, 78 cursive placements, 62 stair strokes, and three manually drawn entrance paths. `reference-layout.json` records measured capital positions and stair geometry. `reconstruction.ts` assembles actual glyph outlines; its cursive baseline is an invisible positioning guide.
+The reconstructed tower uses 71 capital placements, 78 cursive placements, 62 stair strokes, and an entrance assembled from five reusable letter pieces with four short connector paths. `reference-layout.json` records measured capital positions and stair geometry. `reconstruction.ts` assembles actual glyph outlines; its cursive baseline is an invisible positioning guide.
 
 Each letter has a padded, rotated bound. `clearance.ts` clips each stair segment against those bounds and retains its longest clear run. This accounts for ascenders, descenders, slant, line width, and rounded line caps. Letters are not covered with opaque patches, and no visible circular boundary is added.
 
-Original trace and Overlay expose the unchanged accepted `public/study/stair-tower.svg` for comparison. Rebuilt and Show parts contain independent vector pieces and no reference image. The complete tower tracing remains tagged `accepted-tower-study` at `a0a356c20cd77ea1d4aa9cfde0ced423b7af152e`. The original tracing's 99.8% ink agreement is not an accuracy claim for the reconstruction or these new alphabets.
+Original trace and Overlay expose the unchanged accepted `public/study/stair-tower.svg` for comparison. Rebuilt and Show parts contain independent vector pieces and no reference image. The stepped entrance continues the lettering: capital M/A/R and cursive m/s are individually positioned from the kits, with separate line returns joining them. `scripts/fit-entry-letters.py` fits their placements against the photo detail after `scripts/prepare-reconstruction-glyphs.mjs` prepares the glyph masks. These replace the earlier abstract entrance squiggles.
+
+The complete tower tracing remains tagged `accepted-tower-study` at `a0a356c20cd77ea1d4aa9cfde0ced423b7af152e`. The original tracing's 99.8% ink agreement is not an accuracy claim for the reconstruction or these new alphabets.
 
 The observatory and gallery use independent geometry in `app/letter-kit/layout.ts`. Their lettering can be rearranged without changing the building plan. Pan, pinch, wheel, zoom buttons, and keyboard navigation remain available throughout the study.
 

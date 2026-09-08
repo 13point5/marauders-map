@@ -7,7 +7,7 @@ const kit=await json('glyphs'),font=await json('cursive-glyphs'),layout=await js
 const pieces=reconstructTower(kit,font,layout);
 const svg=selected=>`<svg xmlns="http://www.w3.org/2000/svg" width="1010" height="1025" viewBox="60 65 1010 1025"><g fill="black" fill-rule="evenodd" stroke-linecap="round">${selected.map(p=>`<path d="${p.d}" ${p.transform?`transform="${p.transform}"`:''} ${p.strokeWidth?`stroke="black" stroke-width="${p.strokeWidth}" fill="none"`:''}/>`).join('')}</g></svg>`;
 const alpha=async selected=>sharp(Buffer.from(svg(selected))).ensureAlpha().extractChannel('alpha').raw().toBuffer();
-const letters=await alpha(pieces.filter(p=>p.kind==='capital'||p.kind==='cursive'));
+const letters=await alpha(pieces.filter(p=>p.kind==='capital'||p.kind==='cursive'||p.glyph));
 const stairs=await alpha(pieces.filter(p=>p.kind==='stair'));
 let overlap=0,withinThreePixels=0;
 for(let y=3;y<1022;y++)for(let x=3;x<1007;x++)if(stairs[y*1010+x]>16){
