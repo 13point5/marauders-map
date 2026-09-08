@@ -22,7 +22,7 @@ export function LetterKit({style='capitals',showJoins=false}:{style?:KitStyle;sh
   const char=style==='cursive-lower'?letter.toLowerCase():letter;
   const g=style==='capitals'?glyphs.find(g=>g.id===letter)!:script.glyphs[char as keyof typeof script.glyphs];
   const b='bounds' in g?g.bounds:[0,0,'width' in g?g.width:100,100];
-  const scale=Math.min(showJoins?.48:.62,74/(b[2]-b[0]),77/(b[3]-b[1]));
+  const scale=Math.min(.62,74/(b[2]-b[0]),77/(b[3]-b[1]));
   const ports:Record<string,StrokePort>=style==='capitals'?strokePorts.capitals:strokePorts.script;
   const port=ports[char],dx=port.dx,dy=port.dy;
   const continuation=showJoins?joinedQuillLine(port,[[port.x+dx*32,port.y+dy*32],[port.x+dx*32-dy*26,port.y+dy*32+dx*26]],style==='capitals'?2:1):'';
