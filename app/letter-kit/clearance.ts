@@ -10,7 +10,7 @@ export function inside(p:XY,box:KeepOut){
 }
 // Clip against each convex letter box, then retain the longest unobstructed run.
 // Endpoint caps are covered by the padding supplied when creating each box.
-export function clearStair(a:XY,b:XY,boxes:KeepOut[]):{a:XY;b:XY}|null{
+export function clearStair(a:XY,b:XY,boxes:KeepOut[],minimumLength=45):{a:XY;b:XY}|null{
  let runs:[[number,number]]|[number,number][]=[[0,1]];
  for(const box of boxes){
   let lo=0,hi=1,hit=true;
@@ -26,7 +26,7 @@ export function clearStair(a:XY,b:XY,boxes:KeepOut[]):{a:XY;b:XY}|null{
   runs=next;if(!runs.length)return null;
  }
  const run=runs.sort((u,v)=>(v[1]-v[0])-(u[1]-u[0]))[0];
- const length=Math.hypot(b.x-a.x,b.y-a.y);if(!run||length*(run[1]-run[0])<45)return null;
+ const length=Math.hypot(b.x-a.x,b.y-a.y);if(!run||length*(run[1]-run[0])<minimumLength)return null;
  const at=(t:number)=>({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});
  // Small inward retreat avoids numeric boundary contact after SVG rounding.
  return {a:at(run[0]+.05/length),b:at(run[1]-.05/length)};
