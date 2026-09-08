@@ -1,0 +1,74 @@
+[
+  {
+    "file": "originals/IMG_5430.HEIC",
+    "bytes": 2306990,
+    "sha256": "d2b280ef908e650b788c61d9af009660094396deaeb18418b7c9ef2e6ea69e20",
+    "batch": "initial"
+  },
+  {
+    "file": "originals/IMG_5431.HEIC",
+    "bytes": 2869359,
+    "sha256": "e83edf766b07624170ef9ec87db96c1a9d22e9c3830e37b719dfd9f8e760e963",
+    "batch": "initial"
+  },
+  {
+    "file": "originals/IMG_5432.HEIC",
+    "bytes": 2719921,
+    "sha256": "18bd13f0e0ba83493f98ca64a5c0c18c0b4c197240758a5c4d07010bbcaf272a",
+    "batch": "initial"
+  },
+  {
+    "file": "originals/IMG_5433.HEIC",
+    "bytes": 2534592,
+    "sha256": "a29a4ef0de8230c0b54a66a0f18dba72e569045c098cbf3a1b7467f952105b30",
+    "batch": "initial"
+  },
+  {
+    "file": "originals/IMG_5440.HEIC",
+    "bytes": 2898383,
+    "sha256": "e5a7ab895454c1aba708a263b1c8f63f27df0db8471c06fc928981e9c7eb7716",
+    "batch": "additional"
+  },
+  {
+    "file": "originals/IMG_5441.HEIC",
+    "bytes": 2858293,
+    "sha256": "125fffad8acf1bbf76ea76984c42dac6ba811d2978206f46979fd3cc5c2d7c9a",
+    "batch": "additional"
+  },
+  {
+    "file": "originals/IMG_5442.HEIC",
+    "bytes": 3086063,
+    "sha256": "77993992e694297eb99fc39aa06d12fc2dcd7c3c46db1cb6d1be758ddcbd5aa8",
+    "batch": "additional"
+  },
+  {
+    "file": "originals/IMG_5443.HEIC",
+    "bytes": 2215925,
+    "sha256": "10812ee1496e4d94d0773a48a0f92f61fa95a4c8d9790440939a619a7919c965",
+    "batch": "additional"
+  },
+  {
+    "file": "originals/IMG_5444.HEIC",
+    "bytes": 3076221,
+    "sha256": "a665172d653221dcdf858c41b73b344241f5f5c6b40e2fda31ba25b00cfe6fbf",
+    "batch": "additional"
+  },
+  {
+    "file": "originals/IMG_5445.HEIC",
+    "bytes": 2828166,
+    "sha256": "f91128565763148d28a09892b32fe242ee09f1767f83dfb040f2879714892ea2",
+    "batch": "additional"
+  },
+  {
+    "file": "expanded/Photo-1.jpg",
+    "bytes": 432053,
+    "sha256": "53f9d27166e74d3d3a95524842a359c15fe0869672cc6b86ba632cdf6844fda0",
+    "batch": "expanded"
+  },
+  {
+    "file": "expanded/Photo-2.jpg",
+    "bytes": 262702,
+    "sha256": "0ebb6dcaa3cb8f32d69cbebf02b0c9ead0b3b4f40e64265a599660d0bf02aae1",
+    "batch": "expanded"
+  }
+]

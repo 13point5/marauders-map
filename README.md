@@ -1,28 +1,28 @@
-# Sriraam’s map
+# Sriraam’s Map
 
-An interactive, source-traced study of the Marauder’s Map: the approved tower and turning passage, the neighbouring Clock Tower and halls, and the stairwell/turret. All three sections come from the user’s IMG_5431 photograph and share its original coordinates. The app presents one continuous drawing without section selectors or comparison modes. Drag, wheel scrolling, pinch, zoom buttons, and keyboard navigation explore the map on different screen sizes.
+A responsive parchment map that starts folded. Tap the cover or “Mischief Managed” to reveal it; open either side independently, or use “Open fully” for the whole sequence. Once open, drag, pinch, double-tap, scroll, or use the zoom controls to explore. “Fold again” returns to the cover.
 
-## What the artwork is
+## Current implementation
 
-The map is SVG contour artwork, **not live text or a font**. Python/Pillow/OpenCV isolate photographed ink within authored section boundaries and trace it into editable filled paths. Letterforms and their joins come from the source. No automatic gap closing, stroke thinning, invented interiors, or geometric lettering layout is applied. The newer sections select whole connected ink components to avoid severing strokes at scope boundaries. Inspected paper stains are excluded explicitly.
+React + TypeScript, Vinext/Vite, CSS 3D transforms, hosted through Sites/Cloudflare. No animation library or Pretext dependency. Local IM Fell English fonts render interface text.
 
-This method reproduces existing structures. Creating genuinely new architecture in the same style requires composing and drawing new vector lettering/joins; tracing does not generate a new design. The earlier generated font kits and invented layouts have been removed from the current source. They remain recoverable through Git history.
+The paper is a continuous twelve-strip sheet: two stationary center strips, five alternating mountain/valley hinges on each side. Each side expands in three stages. The same map texture is sliced by background position across the front faces; the two outermost back faces meet to form the cover. Responsive framing follows independent side expansion. Reduced-motion preferences disable the CSS motion.
 
-Pretext is not used and its dependency has been removed. UI labels use local IM Fell English fonts, independently of the map artwork.
+The current artwork is **AI-generated raster illustration, not live type, a font, or the earlier traced vector artwork**. The two images were generated with the built-in image tool using the user's original photos as references, then encoded as WebP without changing the composition. `references/proposals/implemented-art-prompts.txt` contains the exact prompts. Fine lettering is illustrative, not a verified reconstruction of every original glyph. The folds are a working web interaction, not an exact replica of the movie prop’s paper mechanics.
 
-## Stack and source layout
+This version focuses on the cover, unfolding, and exploration. Destination content, footsteps, and voice activation are not yet implemented.
 
-- React and TypeScript; Vinext/Vite; CSS; hosted through Sites/Cloudflare.
-- `app/map-sections/`: section metadata, source-coordinate framing, and SVG composition.
-- `public/study/`: current vector artwork and matching photograph crops.
-- `app/map-camera.ts` / `app/use-map-navigation.ts`: responsive pan, pinch, wheel, and keyboard navigation.
-- `scripts/sections.json`: authored boundaries and paper-stain exclusions for the new sections.
-- `scripts/trace-reference-section.py`: generator for the unchanged approved tower.
-- `scripts/trace-map-sections.py`: generator for the neighbouring structures.
+## Project layout
 
-The user's original HEIC files remain outside the repository. Coordinates use EXIF-oriented portrait photos normalized to 1650 pixels wide. The source used here is 4284×5712 after orientation. Supply an equivalent full-resolution PNG/JPEG to regenerate. Preserve orientation; a raw unrotated HEIC decode will produce incorrect crops. The combined comparison crop covers `[185,335,1330,1695]` in normalized photo coordinates.
+- `app/page.tsx`: folding state, phone/desktop framing, controls, and open-map view.
+- `app/folded-map.tsx`: nested hinged paper leaves and front/back textures.
+- `app/fold-geometry.ts`: crease angles, texture indices, and projected bounds.
+- `app/map-camera.ts` and `app/use-map-navigation.ts`: anchored zoom, pan, pointer pinch, and Safari gesture handling.
+- `public/art/`: current cover and estate images.
+- `references/`: all twelve supplied source images, oriented previews, inspected crops, prompts and concept proposals. Original HEIC files are preserved byte-for-byte; the manifest records checksums. These references are not shipped as website assets.
+- `public/study/`, `app/map-sections/*.json`, and the trace/verification scripts: retained approved vector studies for future lettering work. These no longer appear as app views. Rejected collage layouts and their temporary generated fragments have been removed.
 
-## Development
+## Development and verification
 
 ```sh
 npm install
@@ -32,19 +32,6 @@ npx tsc --noEmit
 npm run build
 ```
 
-## Reproduce and verify the ink
+The geometry tests cover continuous texture ordering, alternating hinges, and framing bounds. Camera tests cover pinch bounds and zoom anchoring. Older reference tests check retained vector studies; they do not verify the new illustration. Browser checks cover closed/partial/open states, independent unfolding, automatic opening, refolding, dragging, overview controls, and phone/desktop viewport sizes. Physical touchscreen behavior should also be tried on a real phone.
 
-Authoring requires Python with Pillow, NumPy, and OpenCV; verification uses Sharp (available through the current dependency tree). These tools are not shipped to the browser.
-
-```sh
-python3 scripts/trace-reference-section.py /path/to/oriented-photo.png
-python3 scripts/trace-map-sections.py /path/to/oriented-photo.png
-node scripts/verify-reference-section.mjs
-python3 scripts/verify-reference-topology.py
-node scripts/verify-map-sections.mjs
-python3 scripts/verify-map-topology.py
-```
-
-Ignored `outputs/` contains cleaned source masks, proof images, and verification reports. Ink intersection-over-union measures the vector conversion against the cleaned source mask, not against the unprocessed photograph. The topology check detects disconnected strokes and newly merged components introduced during vectorization. Browser checks cover the continuous map, scrolling/zoom, and responsive layouts; physical touchscreen gestures still need a device check.
-
-Original Marauder’s Map artwork belongs to its respective rights holders. Source photographs were supplied by the user. The former portfolio content and obsolete font experiments were removed from the working tree at the user’s request.
+Original Marauder’s Map artwork belongs to its respective rights holders. Reference images were supplied by the user.
