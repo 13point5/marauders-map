@@ -8,6 +8,7 @@ export function useMapNavigation(viewport:RefObject<HTMLDivElement|null>,open:bo
  const current=useRef({zoom,mapWidth,mapHeight});
  const pending=useRef<Position|null>(null);
  const zoomAction=useRef<(n:number,p?:Position)=>void>(()=>{});
+ // oxlint-disable-next-line react/react-compiler -- scrollLeft/scrollTop are owned DOM properties, not mutations of React props or state.
  useLayoutEffect(()=>{current.current={zoom,mapWidth,mapHeight};const el=viewport.current;if(el&&pending.current){el.scrollLeft=pending.current.x;el.scrollTop=pending.current.y;pending.current=null}},[zoom,mapWidth,mapHeight,viewport]);
  useEffect(()=>{
   const el=viewport.current;if(!open||!el)return;

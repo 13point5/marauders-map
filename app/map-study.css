@@ -21,7 +21,7 @@
   flex-shrink: 0;
   z-index: 2;
 }
-.map-header a {
+.map-title {
   text-decoration: none;
   font-size: 21px;
 }
@@ -310,7 +310,7 @@ button:disabled {
     height: 60px;
     padding: 15px 20px 8px;
   }
-  .map-header a {
+  .map-title {
     font-size: 19px;
   }
   .map-header > span {
@@ -367,7 +367,7 @@ button:disabled {
     height: 40px;
     padding: 8px 20px;
   }
-  .map-header a {
+  .map-title {
     font-size: 17px;
   }
   .map-footer {
@@ -402,4 +402,11 @@ button:disabled {
 }
 .is-exploring .map-footer {
   min-height: 104px;
+}
+
+.map-title {
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
 }

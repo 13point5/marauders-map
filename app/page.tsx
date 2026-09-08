@@ -1,5 +1,7 @@
 'use client';
+/* oxlint-disable jsx-a11y/no-noninteractive-tabindex -- The labeled map application intentionally accepts focus for arrow-key panning and +/- zoom; standard controls are outside it. */
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import {
   ArrowLeft,
   ArrowRight,
@@ -70,11 +72,14 @@ export default function MapExperience() {
   }, [busy, finished, size.width]);
   useEffect(() => {
     if (auto && !busy && !finished) {
-      setFold((f) => ({
-        left: Math.min(3, f.left + 1),
-        right: Math.min(3, f.right + 1),
-      }));
-      setBusy(true);
+      const frame = requestAnimationFrame(() => {
+        setFold((f) => ({
+          left: Math.min(3, f.left + 1),
+          right: Math.min(3, f.right + 1),
+        }));
+        setBusy(true);
+      });
+      return () => cancelAnimationFrame(frame);
     }
   }, [auto, busy, finished]);
   useEffect(() => {
@@ -112,9 +117,15 @@ export default function MapExperience() {
   return (
     <main className={`map-experience ${explore ? 'is-exploring' : ''}`}>
       <header className="map-header">
-        <a href="/" aria-label="Sriraam’s Map, return to closed cover">
+        <button
+          className="map-title"
+          onClick={() => {
+            if (!closed) refold();
+          }}
+          aria-label="Sriraam’s Map, return to closed cover"
+        >
           Sriraam’s Map
-        </a>
+        </button>
         <span>
           {explore ? 'The castle & its grounds' : 'An invitation to wander'}
         </span>
@@ -143,7 +154,7 @@ export default function MapExperience() {
           ref={viewport}
           hidden={!explore}
           className="map-viewport"
-          role="region"
+          role="application"
           tabIndex={explore ? 0 : -1}
           aria-label="Estate map. Drag to pan. Pinch, double-tap, or Control-scroll to zoom. Arrow keys pan; zero fits."
         >
@@ -151,7 +162,10 @@ export default function MapExperience() {
             className="map-paper"
             style={{ width: mapWidth * zoom, aspectRatio: MAP_RATIO }}
           >
-            <img
+            <Image
+              unoptimized
+              width={2172}
+              height={724}
               className="estate-art"
               src="/art/estate.webp"
               alt="Sriraam’s illustrated estate: letter-built castle wings, the Great Hall, Research Tower, Library, Workshop, Owlery and Common Room, with a word forest to the west and a walled garden to the east."
