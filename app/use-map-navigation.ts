@@ -4,11 +4,11 @@ import { anchoredScroll, clampZoom, pinchZoom } from './map-camera';
 
 type Position={x:number;y:number};
 type GestureEvent=Event & {scale:number;clientX:number;clientY:number};
-export function useMapNavigation(viewport:RefObject<HTMLDivElement|null>,open:boolean,zoom:number,setZoom:(n:number)=>void,mapWidth:number) {
- const current=useRef({zoom,mapWidth});
+export function useMapNavigation(viewport:RefObject<HTMLDivElement|null>,open:boolean,zoom:number,setZoom:(n:number)=>void,mapWidth:number,mapHeight=mapWidth*.6) {
+ const current=useRef({zoom,mapWidth,mapHeight});
  const pending=useRef<Position|null>(null);
  const zoomAction=useRef<(n:number,p?:Position)=>void>(()=>{});
- useLayoutEffect(()=>{current.current={zoom,mapWidth};const el=viewport.current;if(el&&pending.current){el.scrollLeft=pending.current.x;el.scrollTop=pending.current.y;pending.current=null}},[zoom,mapWidth,viewport]);
+ useLayoutEffect(()=>{current.current={zoom,mapWidth,mapHeight};const el=viewport.current;if(el&&pending.current){el.scrollLeft=pending.current.x;el.scrollTop=pending.current.y;pending.current=null}},[zoom,mapWidth,mapHeight,viewport]);
  useEffect(()=>{
   const el=viewport.current;if(!open||!el)return;
   const pointers=new Map<number,Position>();
@@ -21,7 +21,7 @@ export function useMapNavigation(viewport:RefObject<HTMLDivElement|null>,open:bo
   const zoomAt=(value:number,point?:Position)=>{
    const state=current.current,next=clampZoom(value);if(next===state.zoom)return;
    const anchor=point??{x:el.clientWidth/2,y:el.clientHeight/2};
-   pending.current=anchoredScroll({scrollX:pending.current?.x??el.scrollLeft,scrollY:pending.current?.y??el.scrollTop,viewWidth:el.clientWidth,viewHeight:el.clientHeight,mapWidth:state.mapWidth,oldZoom:state.zoom,newZoom:next,anchorX:anchor.x,anchorY:anchor.y});
+   pending.current=anchoredScroll({scrollX:pending.current?.x??el.scrollLeft,scrollY:pending.current?.y??el.scrollTop,viewWidth:el.clientWidth,viewHeight:el.clientHeight,mapWidth:state.mapWidth,mapHeight:state.mapHeight,oldZoom:state.zoom,newZoom:next,anchorX:anchor.x,anchorY:anchor.y});
    current.current={...state,zoom:next};setZoom(next);
   };
   zoomAction.current=zoomAt;

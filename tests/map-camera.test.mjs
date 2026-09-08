@@ -7,3 +7,8 @@ test('zoom keeps the map point under the cursor',()=>{const n=anchoredScroll({sc
 test('fit resets both offsets even when the paper is letterboxed',()=>{const n=anchoredScroll({scrollX:700,scrollY:400,viewWidth:1200,viewHeight:800,mapWidth:1000,oldZoom:3,newZoom:1,anchorX:600,anchorY:400});assert.deepEqual(n,{x:0,y:0})});
 test('zoom from a centered phone overview accounts for the paper margins',()=>{const n=anchoredScroll({scrollX:0,scrollY:0,viewWidth:360,viewHeight:500,mapWidth:360,oldZoom:1,newZoom:3,anchorX:180,anchorY:250});assert.deepEqual(n,{x:360,y:74})});
 test('edge gestures clamp inside the paper',()=>{const n=anchoredScroll({scrollX:9000,scrollY:9000,viewWidth:320,viewHeight:500,mapWidth:300,oldZoom:2,newZoom:3,anchorX:10,anchorY:10});assert.deepEqual(n,{x:580,y:40})});
+
+test('portrait drawings keep the map point under the zoom anchor',()=>{
+ const result=anchoredScroll({scrollX:0,scrollY:0,viewWidth:390,viewHeight:600,mapWidth:300,mapHeight:500,oldZoom:1,newZoom:2,anchorX:195,anchorY:300});
+ assert.equal(result.x,105);assert.equal(result.y,200);
+});
