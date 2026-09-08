@@ -14,11 +14,13 @@ The JSON outlines are in `app/letter-kit/glyphs.json` and `app/letter-kit/cursiv
 
 ## Tower reconstruction and clearance
 
-The reconstructed tower uses 71 capital placements, 78 cursive placements, 62 stair strokes, and an entrance assembled from five reusable letter pieces with four short connector paths. `reference-layout.json` records measured capital positions and stair geometry. `reconstruction.ts` assembles actual glyph outlines; its cursive baseline is an invisible positioning guide.
+The reconstructed tower uses 71 capital placements, 78 cursive placements, 62 stair strokes, and three selectable entrance designs assembled from shared capital pieces and filled quill strokes. `reference-layout.json` records measured capital positions and stair geometry. `reconstruction.ts` assembles actual glyph outlines; its cursive baseline is an invisible positioning guide.
 
 Each letter has a padded, rotated bound. `clearance.ts` clips each stair segment against those bounds and retains its longest clear run. This accounts for ascenders, descenders, slant, line width, and rounded line caps. Letters are not covered with opaque patches, and no visible circular boundary is added.
 
-Original trace and Overlay expose the unchanged accepted `public/study/stair-tower.svg` for comparison. Rebuilt and Show parts contain independent vector pieces and no reference image. The stepped entrance continues the lettering: capital M/A/R and cursive m/s are individually positioned from the kits, with separate line returns joining them. `scripts/fit-entry-letters.py` fits their placements against the photo detail after `scripts/prepare-reconstruction-glyphs.mjs` prepares the glyph masks. These replace the earlier abstract entrance squiggles.
+Original trace and Overlay expose the unchanged accepted `public/study/stair-tower.svg` for comparison. Rebuilt and Show parts contain independent vector pieces and no reference image. The entrance now has three design alternatives: **Quiet returns** (recommended, restrained lettering and longer strokes), **Lettered jambs** (more capitals and shorter strokes), and **Stepped passage** (a deeper folded return). Each uses exactly the capital outlines from the tower kit with uniform scaling, preserving the letter proportions. These are design interpretations, not claims of exact photo reconstruction. The earlier fitted entrance recipe remains in `reference-layout.json` for provenance.
+
+`entrance-variants.ts` owns the alternatives and the quill renderer. The renderer follows straight segments with small quadratic corner turns, then constructs a filled ink ribbon. Width responds to a fixed broad-nib angle and modest pressure variation; the centreline is not wobbled. Stroke ends meet selected glyph terminals. The interface switches between an enlarged entrance and the whole tower, so each option can be judged in context.
 
 The complete tower tracing remains tagged `accepted-tower-study` at `a0a356c20cd77ea1d4aa9cfde0ced423b7af152e`. The original tracing's 99.8% ink agreement is not an accuracy claim for the reconstruction or these new alphabets.
 
@@ -41,14 +43,16 @@ python3 scripts/build-complete-kits.py
 python3 scripts/export-map-fonts.py
 node scripts/render-kits.mjs
 node --experimental-strip-types scripts/render-reconstruction.mjs
-node --experimental-strip-types scripts/verify-letter-clearance.mjs
+node --experimental-strip-types scripts/verify-letter-clearance.mjs quiet
+node --experimental-strip-types scripts/verify-letter-clearance.mjs lettered
+node --experimental-strip-types scripts/verify-letter-clearance.mjs stepped
 ```
 
 Offline authoring uses NumPy, OpenCV, fontTools, and Sharp. These are not browser dependencies. Generated proof sheets and reports go into ignored `outputs/alphabet` and `outputs/reconstruction` folders.
 
-The raster clearance verifier renders actual letter paths and stair strokes separately at 1010×1025, including line width and round caps. The current result is **zero overlapping ink pixels and zero stair pixels within three pixels of letter ink**. Geometric tests separately exercise rotated obstacles, endpoint contact, internal crossings, fully blocked segments, all 62 rendered stairs, alphabet completeness, glyph reuse, floor-plan separation, and camera math. All 19 tests pass.
+The raster clearance verifier renders actual letter paths and stair strokes separately at 1010×1025, including line width and round caps. The current result is **zero overlapping ink pixels and zero stair pixels within three pixels of letter ink**. Geometric tests separately exercise rotated obstacles, endpoint contact, internal crossings, fully blocked segments, all 62 rendered stairs, alphabet completeness, glyph reuse, floor-plan separation, and camera math. All 23 tests pass. All three variants retain the shared capital outlines and uniform scaling, and pass the raster stair-clearance check.
 
-Browser inspection covers the three alphabet views, the rebuilt tower, desktop and 320×568 phone layouts, zoom, drag, and Fit. Physical touchscreen pinch remains untested on real hardware.
+Browser inspection covers the alphabet views and reconstructed tower from the preceding updates, plus all three entrance variants in detail and at whole-tower scale. The variant controls and detail framing are checked at desktop and 390×844 phone sizes. Physical touchscreen pinch remains untested on real hardware.
 
 The original extraction can be reproduced with `scripts/trace-tower.py`, `scripts/extract-letter-kit.py`, and the reconstruction-fitting scripts. Running the older capital extraction resets that kit to its initial partial alphabet; rerun `build-complete-kits.py` and the font exporter afterward. `fit-reference-details.py` only owns stair and doorway geometry; it no longer replaces the custom script kit.
 
