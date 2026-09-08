@@ -1,12 +1,10 @@
-"""Fit radial stair segments and export a standard italic font as reusable outlines.
+"""Fit radial stair segments; the independent complete-kit script owns lettering.
 Run after fit-reconstruction.py. Doorways below are manually drawn editable paths.
-Requires OpenCV, NumPy, SciPy, and fontTools; none are browser dependencies.
+Requires OpenCV, NumPy, and SciPy; none are browser dependencies.
 """
 import cv2, numpy as np, json
 from scipy.signal import find_peaks
 from pathlib import Path
-from fontTools.ttLib import TTFont
-from fontTools.pens.svgPathPen import SVGPathPen
 root=Path(__file__).resolve().parents[1]
 src=cv2.imread(str(root/'outputs/study/reference-ink-mask.png'),0)
 full=np.zeros((1311,1090),np.uint8);full[65:65+src.shape[0],60:60+src.shape[1]]=src
@@ -39,9 +37,4 @@ layout['doorways']=[
  'M864 934 Q861 952 884 956 L903 986 Q883 986 864 979 Q882 1001 908 1003 L920 1040 L989 1025 Q985 1010 970 1011 L949 966 Q935 967 931 961'
 ]
 path.write_text(json.dumps(layout,separators=(',',':')))
-font=TTFont(root/'public/fonts/map-3.ttf');glyphset=font.getGlyphSet();cmap=font.getBestCmap();glyphs={}
-for char in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ':
- name=cmap[ord(char)];pen=SVGPathPen(glyphset);glyphset[name].draw(pen)
- glyphs[char]={'d':pen.getCommands(),'advance':font['hmtx'][name][0]}
-(root/'app/letter-kit/cursive-glyphs.json').write_text(json.dumps({'unitsPerEm':font['head'].unitsPerEm,'glyphs':glyphs},separators=(',',':')))
-print(len(stairs),'radial stair segments; standard IM Fell English Italic outlines')
+print(len(stairs),'radial stair segments')

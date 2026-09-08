@@ -1,6 +1,7 @@
 'use client';
 import {useMemo} from 'react';
 import glyphs from './glyphs.json';
+import script from './cursive-glyphs.json';
 import {buildPlan,type Plan} from './layout';
 export function OriginalBuilding({plan,seed}:{plan:Plan;seed:number}){
  const {placed,stairs}=useMemo(()=>buildPlan(plan,glyphs,seed),[plan,seed]);
@@ -11,4 +12,15 @@ export function OriginalBuilding({plan,seed}:{plan:Plan;seed:number}){
   <text x="490" y="288" textAnchor="middle" fontSize="10" letterSpacing="2.5">{plan==='observatory'?'IN PURSUIT OF IDEAS':'A PLACE FOR CURIOSITY'}</text>
  </g>
 }
-export function LetterKit(){return <g fill="#36271f" fillRule="evenodd">{glyphs.map((g,i)=>{const x=230+i%5*130,y=130+Math.floor(i/5)*140;return <g key={g.id} transform={`translate(${x} ${y})`}><path d={g.d} transform={`scale(.65) translate(${-g.width/2} 0)`}/><text y="92" textAnchor="middle" fontSize="14">{g.id}</text></g>})}<text x="490" y="545" textAnchor="middle" fontSize="15" fontStyle="italic">Reusable ink pieces · a partial alphabet, with alternate forms</text></g>}
+export type KitStyle='capitals'|'cursive-lower'|'cursive-upper';
+export function LetterKit({style='capitals'}:{style?:KitStyle}){
+ const alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+ return <g fill="#36271f" fillRule="evenodd">{alphabet.map((letter,i)=>{
+  const x=180+i%7*107,y=76+Math.floor(i/7)*121;
+  const char=style==='cursive-lower'?letter.toLowerCase():letter;
+  const g=style==='capitals'?glyphs.find(g=>g.id===letter)!:script.glyphs[char as keyof typeof script.glyphs];
+  const b='bounds' in g?g.bounds:[0,0,'width' in g?g.width:100,100];
+  const scale=Math.min(.62,74/(b[2]-b[0]),77/(b[3]-b[1]));
+  return <g key={letter} data-kit-letter={char} transform={`translate(${x} ${y})`}><path d={g.d} transform={`translate(0 37) scale(${scale}) translate(${-(b[0]+b[2])/2} ${-(b[1]+b[3])/2})`}/><text y="98" textAnchor="middle" fontSize="13" opacity=".6">{char}</text></g>;
+ })}<text x="500" y="582" textAnchor="middle" fontSize="14" fontStyle="italic">{style==='capitals'?'A–Z · sampled capitals and matching drawn forms':'A–Z / a–z · custom broad-pen letterforms'}</text></g>
+}

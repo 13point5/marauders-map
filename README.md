@@ -1,68 +1,57 @@
-# Sriraam’s Marauder’s Map — lettering lab
+# Sriraam’s map lettering study
 
-A prototype for constructing original map architecture from reusable letter shapes, with the accepted photograph trace preserved as a reference. The earlier personal website is retained in `app/portfolio-map.tsx`.
+The homepage presents a reconstructed stair tower, two independently designed buildings, the accepted reference trace, and complete reusable lettering kits. The earlier personal portfolio map is retained in `app/portfolio-map.tsx` for later integration.
 
-## Content and artwork
+## Complete lettering kits
 
-Personal biography, interests, article, and social links come from https://www.sriraam.me/ (accessed 7 September 2026).
+**Map Capitals** contains A–Z and two alternate forms (28 vector pieces). Twelve sampled forms from IMG_5431 are retained. The missing capitals are drawn with a broad pen in a matching style; A and O were also redrawn to repair a clipped counter and an accidental attached stroke in the earlier extraction.
 
-Cover/reference artwork: MinaLima, https://media.minalima.com/2023/02/zoom-hpwp07-1300x1300.jpg. Source: https://minalima.com/shop-wizarding-world/shop-by-collection/the-marauders-map/ . Original artwork belongs to its respective rights holders. Official replica reference: https://harrypottershop.co.uk/products/marauders-map-replica . The live interior is an original interactive SVG floor plan with text forming the architectural walls.
+**Map Script** contains uppercase A–Z and lowercase a–z, plus a space. All 52 letter contours are independently authored pen paths, informed by the low x-height, slant, loops, and weight variation visible across the user's IMG_5430, IMG_5431, IMG_5432, and IMG_5433 photos. They are a designed companion alphabet, not exact extractions of every handwritten source character. Unseen or ambiguous letters are inferred in the same style. No stock italic font supplies this kit.
 
-Fonts: IM Fell English and Cormorant Garamond, served locally from Google Fonts assets.
+The Letter kit screen has three alphabet views and downloads for `public/fonts/map-capitals.ttf` and `public/fonts/map-script.ttf`. These are TrueType exports of the same outlines used in the SVG artwork. The capital font contains uppercase letters; the script font contains both cases. They are alphabet fonts, without numerals, punctuation, or advanced contextual ligatures.
 
-## Development
+The JSON outlines are in `app/letter-kit/glyphs.json` and `app/letter-kit/cursive-glyphs.json`. The authored pen recipes and the nib-to-contour conversion are in `scripts/build-complete-kits.py`. `scripts/export-map-fonts.py` exports the fonts without reading a source font file.
 
-Run `npm install`, then `npm run dev`. Build with `npm run build`; check types with `npx tsc --noEmit`. Run the camera geometry tests with `npm run test:map`.
+## Tower reconstruction and clearance
 
-Content lives in `app/page.tsx`; architectural geometry and named footstep routes are in `app/map-art.tsx`.
+The reconstructed tower uses 71 capital placements, 78 cursive placements, 62 stair strokes, and three manually drawn entrance paths. `reference-layout.json` records measured capital positions and stair geometry. `reconstruction.ts` assembles actual glyph outlines; its cursive baseline is an invisible positioning guide.
 
-Wall inscriptions use [Pretext](https://github.com/chenglou/pretext) to measure the loaded local font, fit whole words, and reuse prepared text without repeated DOM measurement. Walls have separate straight segments, door openings, and measured curved inscriptions. Short wall returns are deliberately blank instead of breaking words.
+Each letter has a padded, rotated bound. `clearance.ts` clips each stair segment against those bounds and retains its longest clear run. This accounts for ascenders, descenders, slant, line width, and rounded line caps. Letters are not covered with opaque patches, and no visible circular boundary is added.
 
-Drag with a mouse or finger to pan. Pinch to zoom on touchscreens; use the wheel or trackpad to pan and Ctrl/Command-scroll to zoom at the pointer. Double-click empty map space to zoom, or use the zoom buttons and Fit. With the map focused, arrow keys pan, +/− zoom, and 0 fits the full map. The viewport adapts to available width and height, with persistent wing controls on small screens. The camera math and interaction handlers live in `app/map-camera.ts` and `app/use-map-navigation.ts`.
+Original trace and Overlay expose the unchanged accepted `public/study/stair-tower.svg` for comparison. Rebuilt and Show parts contain independent vector pieces and no reference image. The complete tower tracing remains tagged `accepted-tower-study` at `a0a356c20cd77ea1d4aa9cfde0ced423b7af152e`. The original tracing's 99.8% ink agreement is not an accuracy claim for the reconstruction or these new alphabets.
 
-Click “Mischief Managed” or the cover to open. Voice activation appears when the browser supports SpeechRecognition; it starts only after pressing the microphone control. Speech availability and permission depend on the browser. Click opening remains available. The site respects reduced motion, provides keyboard-accessible destinations, and allows footsteps to be paused.
+The observatory and gallery use independent geometry in `app/letter-kit/layout.ts`. Their lettering can be rearranged without changing the building plan. Pan, pinch, wheel, zoom buttons, and keyboard navigation remain available throughout the study.
 
-## Validation
-
-Browser checks cover opening/folding, all five destinations, named footsteps, zoom buttons, drag and wheel panning, keyboard navigation, and layouts at 320×568, 390×844, 768×1024, 844×390, and 1440×1000. Measured inscriptions stay within their wall capacities. Camera tests cover pinch scaling, pointer anchoring, centered overview margins, fit, and boundary clamping. Physical touchscreen pinch and microphone recognition have not been tested on real hardware.
-
-## Current focus: one stair tower
-
-The homepage is now a single-shape study from the user's IMG_5431 photograph. The previous portfolio experience is retained in `app/portfolio-map.tsx` for later integration, and is not shown in this study.
-
-`public/study/stair-tower.svg` contains only filled ink contours. It is a vector tracing of the supplied artwork, not a newly typeset tower or a generative building system. There are no added circular or rectangular outlines. The photo, drawing, and overlay modes share the same image coordinates. Pan/zoom remains available.
-
-To reproduce the study, decode IMG_5431 at full resolution to JPEG with orientation metadata, then run `python3 scripts/trace-tower.py /path/to/decoded-photo.jpg` and `node scripts/verify-tower.mjs`. The extraction requires Pillow, NumPy, and OpenCV; the verification uses the existing Sharp installation. These are offline authoring tools, not site runtime dependencies.
-
-The verifier rasterizes the actual SVG and compares it to the isolated dark-ink mask at 1010×1025 pixels. It checks retention, precision, intersection-over-union, and absence of added geometric border primitives. This is a tracing-fidelity check, not an independent perceptual-quality score. The original photo overlay and enlarged browser screenshots provide the visual check. Generated masks and reports are in the ignored `outputs/study` folder.
-
-## Original structures from reusable letter pieces
-
-The current homepage has an original observatory, an original gallery, the accepted reference tower, and a visible letter kit. The new structures are assembled from 14 vector glyph forms (a partial capital alphabet with alternates), extracted and straightened from the photographed capital rim. They are not traces of either new floor plan, and they are not a complete installable font.
-
-`app/letter-kit/glyphs.json` holds the reusable outlines; `app/letter-kit/layout.ts` owns the independently defined floor plans and places the pieces along smooth curves. Letter widths, orientations, and scales are controlled per piece. Conservative oriented bounds prevent letter collisions, and stair treads that would meet the letter bounds are omitted. Rearranging the lettering changes its selection while leaving the floor plan fixed.
-
-The accepted original study is committed at `a0a356c20cd77ea1d4aa9cfde0ced423b7af152e` and tagged `accepted-tower-study`. Its SVG asset remains unchanged. The 99.8% reference tracing agreement does not apply to the new designs, whose geometry is intentionally different. Their checks test independent geometry, deterministic rearrangement, letter separation, and stair clearance. Run `node --experimental-strip-types --test tests/letter-layout.test.mjs`.
-
-The kit is a proof of reusable construction. Extending it to a full alphabet, script forms, denser wall arrangements, and a wider architectural vocabulary remains design work; it should not be presented as a finished general-purpose font. `scripts/extract-letter-kit.py` reproduces the current pieces after the reference ink mask has been generated. The abandoned connected-photo extraction is kept only in ignored local study outputs, not published.
-
-## Reconstructing the reference with the reusable method
-
-The default **Rebuilt tower** study uses the same 14 capital outlines as the new floor plans, placed 71 times. Its geometry is measured from the accepted tower: the capital slots are fitted in polar coordinates, and 62 radial stair strokes are fitted to the reference ink. Three entrance paths are manually drawn. This is a reconstruction recipe for this tower, not an automatic photo-to-building generator. The same glyphs remain available for independently designed layouts.
-
-The cursive band is an approximation using 106 IM Fell English Italic glyph outlines, with an undulating baseline and modest size/angle variation. It is **not** a faithful recreation of the source's handwriting. Capital contours repeat from the small kit; the original's individual variations are not reproduced. No photograph or full-tower tracing is embedded in Rebuilt or Show parts. Original trace and Overlay explicitly display the unchanged accepted trace for comparison.
-
-Reproduce the authoring steps after generating the source ink mask:
+## Development and verification
 
 ```sh
-node scripts/prepare-reconstruction-glyphs.mjs
-python3 scripts/fit-reconstruction.py
-python3 scripts/fit-reference-details.py
-node --experimental-strip-types scripts/render-reconstruction.mjs
-python3 scripts/verify-reconstruction.py
-node --experimental-strip-types --test tests/reconstruction.test.mjs
+npm install
+npm run dev
+npx tsc --noEmit
+node --experimental-strip-types --test tests/*.test.mjs
+npm run build
 ```
 
-The offline fitting scripts additionally require SciPy and fontTools. The browser only needs the checked-in JSON recipes and SVG renderer. The verification report compares foreground ink masks at identical 1010×1025 registration. Current whole-image IoU is **0.489**, precision **0.729**, and recall **0.597**; these are pixel agreement measures, not perceptual accuracy percentages. The earlier 0.998 tracing score does not apply. The mismatched cursive, stair stroke contours, and entrance detail remain visible in the overlay.
+To regenerate the completed alphabets and exports from the checked-in sampled pieces:
 
-Validation for this change: type checking, 16 combined layout/camera/reconstruction tests, desktop and 390×844 browser inspection, working zoom/drag/Fit, and no embedded image in the rebuilt-only DOM. Real hardware pinch remains untested.
+```sh
+python3 scripts/build-complete-kits.py
+python3 scripts/export-map-fonts.py
+node scripts/render-kits.mjs
+node --experimental-strip-types scripts/render-reconstruction.mjs
+node --experimental-strip-types scripts/verify-letter-clearance.mjs
+```
+
+Offline authoring uses NumPy, OpenCV, fontTools, and Sharp. These are not browser dependencies. Generated proof sheets and reports go into ignored `outputs/alphabet` and `outputs/reconstruction` folders.
+
+The raster clearance verifier renders actual letter paths and stair strokes separately at 1010×1025, including line width and round caps. The current result is **zero overlapping ink pixels and zero stair pixels within three pixels of letter ink**. Geometric tests separately exercise rotated obstacles, endpoint contact, internal crossings, fully blocked segments, all 62 rendered stairs, alphabet completeness, glyph reuse, floor-plan separation, and camera math. All 19 tests pass.
+
+Browser inspection covers the three alphabet views, the rebuilt tower, desktop and 320×568 phone layouts, zoom, drag, and Fit. Physical touchscreen pinch remains untested on real hardware.
+
+The original extraction can be reproduced with `scripts/trace-tower.py`, `scripts/extract-letter-kit.py`, and the reconstruction-fitting scripts. Running the older capital extraction resets that kit to its initial partial alphabet; rerun `build-complete-kits.py` and the font exporter afterward. `fit-reference-details.py` only owns stair and doorway geometry; it no longer replaces the custom script kit.
+
+## Reference and retained portfolio content
+
+Personal content comes from https://www.sriraam.me/ (accessed 7 September 2026). The map study is based on the user's four replica photographs. Original Marauder’s Map artwork belongs to its respective rights holders. Prior cover reference: https://minalima.com/shop-wizarding-world/shop-by-collection/the-marauders-map/ . UI labels still use locally served IM Fell English and Cormorant Garamond; these are separate from the custom map-lettering kits.
+
+The retained portfolio uses Pretext for text measurement. The custom letter-outline construction and stair clearance do not depend on Pretext.
