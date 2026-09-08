@@ -100,7 +100,7 @@
   outline: 1px solid #57412522;
 }
 .paper-front {
-  background-image: url('/art/estate.webp');
+  background-image: none;
   background-size: 1200% 100%;
   transform: translateZ(0.2px);
 }

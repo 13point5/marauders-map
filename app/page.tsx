@@ -1,7 +1,9 @@
 'use client';
 /* oxlint-disable jsx-a11y/no-noninteractive-tabindex -- The labeled map application intentionally accepts focus for arrow-key panning and +/- zoom; standard controls are outside it. */
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
+import { EstateDefinitions, EstateMap } from './estate/drawing';
+import { places } from './estate/geometry';
+import './estate/estate.css';
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,6 +18,8 @@ import { foldBounds, FOLD_STEPS, MAP_RATIO } from './fold-geometry';
 import './map-study.css';
 
 export default function MapExperience() {
+  const [selected, setSelected] = useState<string | null>(null);
+  const place = places.find((p) => p.id === selected);
   const [fold, setFold] = useState({ left: 0, right: 0 });
   const [busy, setBusy] = useState(false),
     [auto, setAuto] = useState(false),
@@ -99,6 +103,7 @@ export default function MapExperience() {
     setBusy(true);
   };
   const refold = () => {
+    setSelected(null);
     setAuto(false);
     setExplore(false);
     setZoom(1);
@@ -116,6 +121,7 @@ export default function MapExperience() {
   const scale = Math.min(1, (size.width * 0.84) / (bounds.width * leaf));
   return (
     <main className={`map-experience ${explore ? 'is-exploring' : ''}`}>
+      <EstateDefinitions />
       <header className="map-header">
         <button
           className="map-title"
@@ -162,22 +168,42 @@ export default function MapExperience() {
             className="map-paper"
             style={{ width: mapWidth * zoom, aspectRatio: MAP_RATIO }}
           >
-            <Image
-              unoptimized
-              width={2172}
-              height={724}
-              className="estate-art"
-              src="/art/estate.webp"
-              alt="Sriraam’s illustrated estate: letter-built castle wings, the Great Hall, Research Tower, Library, Workshop, Owlery and Common Room, with a word forest to the west and a walled garden to the east."
-              draggable={false}
-            />
+            <EstateMap selected={selected} onSelect={setSelected} />
           </div>
         </div>
       </div>
+      {explore && place && (
+        <aside className="place-note" aria-label={place.name}>
+          <button
+            className="note-close"
+            onClick={() => setSelected(null)}
+            aria-label="Close place note"
+          >
+            ×
+          </button>
+          <span>{place.subtitle}</span>
+          <h2>{place.name}</h2>
+          <p>{place.body}</p>
+          {'links' in place && (
+            <nav aria-label="Correspondence links">
+              {place.links.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {link.name} ↗
+                </a>
+              ))}
+            </nav>
+          )}
+        </aside>
+      )}
       <footer className="map-footer">
         <p className="map-hint" aria-live="polite">
           {explore
-            ? 'Drag to wander · pinch to look closer'
+            ? 'Drag & pinch to explore · tap a place'
             : closed
               ? 'A little mischief, a little curiosity.'
               : finished

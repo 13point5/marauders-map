@@ -4,10 +4,10 @@ import { hingeAngle, LEAVES, sheetIndex } from './fold-geometry';
 
 function Face({ index }: { index: number }) {
   return (
-    <div
-      className="paper-face paper-front"
-      style={{ backgroundPosition: `${(index / 11) * 100}% 50%` }}
-    >
+    <div className="paper-face paper-front vector-front">
+      <svg viewBox={`${index * 200} 0 200 800`} preserveAspectRatio="none">
+        <use href="#estate-vector" width="2400" height="800" />
+      </svg>
       <span className="crease-shade" />
     </div>
   );

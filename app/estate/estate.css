@@ -1,0 +1,246 @@
+.estate-definitions {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+}
+.estate-ink {
+  fill: #422d22;
+  font-family: 'IM Fell English', Georgia, serif;
+}
+.capital-wall {
+  font-weight: 400;
+  stroke: #422d22;
+  stroke-width: 0.18;
+  paint-order: stroke fill;
+}
+.script-wall {
+  font-style: italic;
+  fill: #51372b;
+}
+.quill-rule,
+.stairs path,
+.column,
+.herb,
+.glasshouse,
+.bridge {
+  fill: none;
+  stroke: #4a3022;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.stairs path {
+  stroke-width: 1.1;
+}
+.column {
+  stroke-width: 1.3;
+}
+.room-label {
+  pointer-events: none;
+}
+.room-subtitle,
+.marginal-note,
+.passage-name {
+  font-style: italic;
+  fill: #735540;
+  letter-spacing: 0.2px;
+}
+.room-index {
+  font-size: 15px;
+  fill: #86634a;
+}
+.marginal-note {
+  font-size: 13px;
+}
+.passage-name {
+  font-size: 15px;
+}
+.forest-canopy-letters {
+  fill: #dfc9a4;
+  font-size: 7.7px;
+  letter-spacing: 0.2px;
+}
+.tree-trunk {
+  fill: none;
+  stroke: #dfc9a4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.forest .capital-wall,
+.forest .script-wall {
+  fill: #b0956b;
+  stroke: none;
+}
+.forest-trail {
+  fill: none;
+  stroke: #9a7651;
+  stroke-width: 2;
+  stroke-dasharray: 2 8;
+}
+.forest-edge {
+  fill: none;
+  stroke: #90724f;
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+.garden-walk {
+  fill: none;
+  stroke: #9b7c55;
+  stroke-width: 1.2;
+}
+.herb {
+  stroke-width: 1.1;
+}
+.glasshouse {
+  stroke-width: 1.2;
+}
+.river-bank {
+  fill: none;
+  stroke: #8e7252;
+  stroke-width: 1.4;
+}
+.water-mark {
+  fill: none;
+  stroke: #9d8260;
+  stroke-width: 0.8;
+}
+.approach {
+  fill: none;
+  stroke: #64462f;
+  stroke-width: 1.8;
+}
+.bridge {
+  stroke-width: 2;
+}
+.folio-corner {
+  fill: none;
+  stroke: #9a7c53;
+  stroke-width: 1;
+}
+.folio-note {
+  font-size: 10px;
+  letter-spacing: 2px;
+  fill: #8b6c4d;
+}
+.vector-front {
+  overflow: hidden;
+}
+.vector-front > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.vector-map {
+  overflow: visible;
+}
+.place-target {
+  cursor: pointer;
+  outline: none;
+}
+.place-target > path {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 2;
+  transition:
+    fill 0.2s,
+    stroke 0.2s;
+}
+.place-target:hover > path,
+.place-target:focus-visible > path {
+  fill: #9b61300d;
+  stroke: #83372888;
+  stroke-dasharray: 3 5;
+}
+.place-target.selected > path {
+  fill: #8c42250c;
+  stroke: #843c28;
+  stroke-dasharray: 3 5;
+}
+.wandering-trail {
+  fill: #78332c;
+  pointer-events: none;
+}
+.place-note {
+  position: absolute;
+  z-index: 5;
+  right: 24px;
+  bottom: 120px;
+  width: min(350px, calc(100% - 32px));
+  padding: 23px 26px 25px;
+  background: #f0e6cf;
+  box-shadow: 0 5px 35px #3c231e25;
+  border: 1px solid #85653c55;
+}
+.place-note > span {
+  font-size: 13px;
+  font-style: italic;
+  color: #85644a;
+}
+.place-note h2 {
+  font-size: 26px;
+  font-weight: 400;
+  margin: 7px 25px 12px 0;
+}
+.place-note p {
+  font-size: 17px;
+  line-height: 1.5;
+  margin: 0;
+}
+.note-close {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  font-size: 26px;
+}
+.place-note nav {
+  display: flex;
+  gap: 22px;
+  margin-top: 18px;
+  font-size: 16px;
+}
+.estate-art {
+  background: #e8dfc9;
+}
+@media (max-width: 650px) {
+  .place-note {
+    left: 16px;
+    right: 16px;
+    bottom: 111px;
+    max-height: 44dvh;
+    overflow: auto;
+    padding: 18px 22px;
+  }
+  .place-note p {
+    font-size: 16px;
+  }
+  .place-note h2 {
+    font-size: 23px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wandering-trail {
+    display: none;
+  }
+}
+.quill-return {
+  fill: none;
+  stroke: #493023;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.wall-underwriting {
+  font-style: italic;
+  fill: #674b34;
+  stroke: none;
+}
+.tree-trunk {
+  stroke: #65452d;
+}
+.forest .quill-return {
+  stroke: #a0885c;
+  stroke-width: 0.6;
+}
