@@ -1,6 +1,6 @@
 # Sriraam’s map
 
-An interactive, source-traced study of the Marauder’s Map: the approved tower and turning passage, the neighbouring Clock Tower and halls, and the stairwell/turret. All three sections come from the user’s IMG_5431 photograph and share its original coordinates. Drawing, Photograph, and Overlay views support close comparison. Drag, wheel scrolling, pinch, zoom buttons, and keyboard navigation explore the map on different screen sizes.
+An interactive, source-traced study of the Marauder’s Map: the approved tower and turning passage, the neighbouring Clock Tower and halls, and the stairwell/turret. All three sections come from the user’s IMG_5431 photograph and share its original coordinates. The app presents one continuous drawing without section selectors or comparison modes. Drag, wheel scrolling, pinch, zoom buttons, and keyboard navigation explore the map on different screen sizes.
 
 ## What the artwork is
 
@@ -45,6 +45,6 @@ node scripts/verify-map-sections.mjs
 python3 scripts/verify-map-topology.py
 ```
 
-Ignored `outputs/` contains cleaned source masks, proof images, and verification reports. Ink intersection-over-union measures the vector conversion against the cleaned source mask, not against the unprocessed photograph. The topology check detects disconnected strokes and newly merged components introduced during vectorization. Browser checks cover comparison controls, section framing, scrolling/zoom, and responsive layouts; physical touchscreen gestures still need a device check.
+Ignored `outputs/` contains cleaned source masks, proof images, and verification reports. Ink intersection-over-union measures the vector conversion against the cleaned source mask, not against the unprocessed photograph. The topology check detects disconnected strokes and newly merged components introduced during vectorization. Browser checks cover the continuous map, scrolling/zoom, and responsive layouts; physical touchscreen gestures still need a device check.
 
 Original Marauder’s Map artwork belongs to its respective rights holders. Source photographs were supplied by the user. The former portfolio content and obsolete font experiments were removed from the working tree at the user’s request.
