@@ -45,3 +45,24 @@ The current homepage has an original observatory, an original gallery, the accep
 The accepted original study is committed at `a0a356c20cd77ea1d4aa9cfde0ced423b7af152e` and tagged `accepted-tower-study`. Its SVG asset remains unchanged. The 99.8% reference tracing agreement does not apply to the new designs, whose geometry is intentionally different. Their checks test independent geometry, deterministic rearrangement, letter separation, and stair clearance. Run `node --experimental-strip-types --test tests/letter-layout.test.mjs`.
 
 The kit is a proof of reusable construction. Extending it to a full alphabet, script forms, denser wall arrangements, and a wider architectural vocabulary remains design work; it should not be presented as a finished general-purpose font. `scripts/extract-letter-kit.py` reproduces the current pieces after the reference ink mask has been generated. The abandoned connected-photo extraction is kept only in ignored local study outputs, not published.
+
+## Reconstructing the reference with the reusable method
+
+The default **Rebuilt tower** study uses the same 14 capital outlines as the new floor plans, placed 71 times. Its geometry is measured from the accepted tower: the capital slots are fitted in polar coordinates, and 62 radial stair strokes are fitted to the reference ink. Three entrance paths are manually drawn. This is a reconstruction recipe for this tower, not an automatic photo-to-building generator. The same glyphs remain available for independently designed layouts.
+
+The cursive band is an approximation using 106 IM Fell English Italic glyph outlines, with an undulating baseline and modest size/angle variation. It is **not** a faithful recreation of the source's handwriting. Capital contours repeat from the small kit; the original's individual variations are not reproduced. No photograph or full-tower tracing is embedded in Rebuilt or Show parts. Original trace and Overlay explicitly display the unchanged accepted trace for comparison.
+
+Reproduce the authoring steps after generating the source ink mask:
+
+```sh
+node scripts/prepare-reconstruction-glyphs.mjs
+python3 scripts/fit-reconstruction.py
+python3 scripts/fit-reference-details.py
+node --experimental-strip-types scripts/render-reconstruction.mjs
+python3 scripts/verify-reconstruction.py
+node --experimental-strip-types --test tests/reconstruction.test.mjs
+```
+
+The offline fitting scripts additionally require SciPy and fontTools. The browser only needs the checked-in JSON recipes and SVG renderer. The verification report compares foreground ink masks at identical 1010×1025 registration. Current whole-image IoU is **0.489**, precision **0.729**, and recall **0.597**; these are pixel agreement measures, not perceptual accuracy percentages. The earlier 0.998 tracing score does not apply. The mismatched cursive, stair stroke contours, and entrance detail remain visible in the overlay.
+
+Validation for this change: type checking, 16 combined layout/camera/reconstruction tests, desktop and 390×844 browser inspection, working zoom/drag/Fit, and no embedded image in the rebuilt-only DOM. Real hardware pinch remains untested.
