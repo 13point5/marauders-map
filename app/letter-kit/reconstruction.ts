@@ -2,7 +2,7 @@ import {buildEntrance,type EntranceVariant} from './entrance-variants.ts';
 import type {Glyph} from './layout';
 import {clearStair,letterBox,type KeepOut} from './clearance.ts';
 export type Piece={kind:'capital'|'cursive'|'stair'|'doorway';d:string;transform?:string;glyph?:string;strokeWidth?:number;fill?:string;bounds?:KeepOut};
-type Layout={capitals:{glyph:string;band:string;x:number;y:number;angle:number;width:number;height:number}[];stairs:{a:number[];b:number[];width:number}[];entrance:{letters:{family:string;glyph:string;x:number;y:number;angle:number;width:number;height:number}[];connectors:string[]}};
+type Layout={capitals:{glyph:string;band:string;joinId?:string;x:number;y:number;angle:number;width:number;height:number}[];stairs:{a:number[];b:number[];width:number}[];entrance:{letters:{family:string;glyph:string;x:number;y:number;angle:number;width:number;height:number}[];connectors:string[]}};
 type Cursive={unitsPerEm:number;baseline:number;glyphs:Record<string,{d:string;advance:number;bounds:number[]}>};
 // Layout is measured from the reference. Letter contours come from reusable kits.
 export function reconstructTower(kit:Glyph[],cursive:Cursive,layout:Layout,variant:EntranceVariant='quiet'):Piece[]{
@@ -25,7 +25,9 @@ export function reconstructTower(kit:Glyph[],cursive:Cursive,layout:Layout,varia
   }
   cursor+=advance;
  }
- pieces.push(...buildEntrance(kit,variant));
+ const exit=layout.capitals.find(p=>p.joinId==='east-exit');
+ const exitGlyph=exit&&kit.find(g=>g.id===exit.glyph);
+ pieces.push(...buildEntrance(kit,variant,exit&&exitGlyph?{x:exit.x,y:exit.y,angle:exit.angle,sx:exit.width/exitGlyph.width,sy:exit.height/100,cx:exitGlyph.width/2,cy:50}:undefined));
  const boxes=pieces.flatMap(p=>p.bounds?[p.bounds]:[]);
  for(const s of layout.stairs){
   const segment=clearStair({x:s.a[0],y:s.a[1]},{x:s.b[0],y:s.b[1]},boxes);

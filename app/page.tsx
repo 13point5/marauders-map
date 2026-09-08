@@ -13,6 +13,7 @@ export default function TowerStudy(){
  const [study,setStudy]=useState<Study>('reconstruction'),[mode,setMode]=useState<Mode>('trace'),[seed,setSeed]=useState(13);
  const [entrance,setEntrance]=useState<EntranceVariant>('quiet'),[entranceDetail,setEntranceDetail]=useState(true);
  const [kitStyle,setKitStyle]=useState<KitStyle>('capitals');
+ const [showJoins,setShowJoins]=useState(false);
  const [comparison,setComparison]=useState<Compare>('rebuilt');
  const [zoom,setZoom]=useState(1),[mapWidth,setMapWidth]=useState(1000);
  const viewport=useRef<HTMLDivElement>(null);
@@ -32,13 +33,13 @@ export default function TowerStudy(){
      {study==='reconstruction'?<svg x={entranceDetail?120:240} y="36" width={entranceDetail?760:520} height="528" viewBox={entranceDetail?"550 770 510 340":"60 65 1010 1025"}>
       {(comparison==='original'||comparison==='overlay')&&<image href="/study/stair-tower.svg" x="60" y="65" width="1010" height="1025" opacity={comparison==='overlay'?.45:1}/>}
       {comparison!=='original'&&<RebuiltTower variant={entrance} colored={comparison==='parts'} overlay={comparison==='overlay'}/>}
-     </svg>:original?<OriginalBuilding plan={study} seed={seed}/>:study==='letters'?<LetterKit style={kitStyle}/>:<>
+     </svg>:original?<OriginalBuilding plan={study} seed={seed}/>:study==='letters'?<LetterKit style={kitStyle} showJoins={showJoins}/>:<>
       {mode!=='trace'&&<image href="/study/tower-reference.jpg" x="240" y="36" width="520" height="528"/>}
       {mode!=='photo'&&<image href="/study/stair-tower.svg" x="240" y="36" width="520" height="528" className={mode==='overlay'?'trace-overlay':undefined}/>}
      </>}
     </svg>
    </div>
   </div>
-  <footer className="study-footer"><p>{study==='letters'?<a className="font-download" href={kitStyle==='capitals'?'/fonts/map-capitals.ttf':'/fonts/map-script.ttf'} download>{kitStyle==='capitals'?'Download capital font':'Download cursive font'}</a>:study==='reconstruction'?comparison==='overlay'?'Teal: rebuilt · brown: original · aligned at the same scale':comparison==='parts'?'Brown: capitals · rust: cursive letters · teal: stairs · gold: entrance':entranceOptions.find(v=>v.id===entrance)!.description:study==='reference'&&mode==='overlay'?'Drawing over photograph · same scale and position':'Drag to explore · pinch or Ctrl/⌘-scroll to zoom'}</p><div className="study-zoom">{study==='reconstruction'&&<button className="detail-toggle" onClick={()=>{setEntranceDetail(d=>!d);zoomTo(1)}}>{entranceDetail?'Whole tower':'Entrance detail'}</button>}<button onClick={()=>zoomTo(zoom-.5)} disabled={zoom<=1} aria-label="Zoom out"><Minus size={18}/></button><button onClick={()=>zoomTo(1)} aria-label="Fit drawing"><Scan size={16}/><span>{zoom===1?'Fit':`${Math.round(zoom*100)}%`}</span></button><button onClick={()=>zoomTo(zoom+.5)} disabled={zoom>=5} aria-label="Zoom in"><Plus size={18}/></button></div></footer>
+  <footer className="study-footer"><p>{study==='letters'?<a className="font-download" href={kitStyle==='capitals'?'/fonts/map-capitals.ttf':'/fonts/map-script.ttf'} download>{kitStyle==='capitals'?'Download capital font':'Download cursive font'}</a>:study==='reconstruction'?comparison==='overlay'?'Teal: rebuilt · brown: original · aligned at the same scale':comparison==='parts'?'Brown: capitals · rust: cursive letters · teal: stairs · gold: entrance':entranceOptions.find(v=>v.id===entrance)!.description:study==='reference'&&mode==='overlay'?'Drawing over photograph · same scale and position':'Drag to explore · pinch or Ctrl/⌘-scroll to zoom'}</p><div className="study-zoom">{study==='letters'&&<button className="detail-toggle" aria-pressed={showJoins} onClick={()=>setShowJoins(v=>!v)}>{showJoins?'Letters only':'Show joins'}</button>}{study==='reconstruction'&&<button className="detail-toggle" onClick={()=>{setEntranceDetail(d=>!d);zoomTo(1)}}>{entranceDetail?'Whole tower':'Entrance detail'}</button>}<button onClick={()=>zoomTo(zoom-.5)} disabled={zoom<=1} aria-label="Zoom out"><Minus size={18}/></button><button onClick={()=>zoomTo(1)} aria-label="Fit drawing"><Scan size={16}/><span>{zoom===1?'Fit':`${Math.round(zoom*100)}%`}</span></button><button onClick={()=>zoomTo(zoom+.5)} disabled={zoom>=5} aria-label="Zoom in"><Plus size={18}/></button></div></footer>
  </main>
 }
