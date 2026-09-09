@@ -66,39 +66,24 @@ def letters_line(a,b,height,phrase,cursive=False):
 
 # The doorway is a real opening in both ink rims. Capitals form the outer wall;
 # cursive forms the inner edge. Neither is crossed by a continuous circle.
-for a,b in [(67,108),(114,172),(178,225),(231,293),(299,366),(372,402)]:
-    ring(207,a,b,12,'OMNIBVS MARAVDENTIBVS BONVM AVDERE EST ',False)
-for a,b in [(68,122),(132,218),(228,289),(299,398)]:
-    ring(187,a,b,10,'per silentium quaerere et invenire ',True)
+# IMG_5431's circular rim is uninterrupted lettering. Architectural returns
+# occur at the entrance, not as repeated U-shaped decorations around the arc.
+ring(207,67,402,12,'OMNIBVS MARAVDENTIBVS BONVM AVDERE EST ',False)
+ring(187,68,398,10,'per silentium quaerere et invenire ',True)
 ring(118,70,398,17,'ambulantibus mirabilia latent ',True)
 
 # Unequal stair flights and broad landings, with a protected band at each rim.
-# End rails touch their steps; the connected geometry is separate from letters.
+# Individual quill strokes have free ends, as in the photographed tower.
+# No enclosing rails, doubled rungs, or end posts turn the flights into fences.
 flights=[(-171,-143,12),(-121,-78,18),(-57,-29,12),(-10,30,17),(83,120,16),(137,160,10)]
 for start,end,count in flights:
-    arc(132,start,end);arc(176,start,end)
     for i in range(count+1):
         a=start+(end-start)*i/count
-        line([polar(132,a),polar(176,a)],'stairs')
-        if i%4==1:
-            line([polar(153,a+.75),polar(173,a+.75)],'fine')
-    for a in [start,end]:
-        line([polar(130,a),polar(180,a)],'joins')
-
-# Small projecting shoulders change the silhouette without drawing box borders
-# around every run of text. All returns use shared endpoints.
-for a in [-132,-64,9,111,175]:
-    p=polar(202,a-3);q=polar(224,a-3);s=polar(224,a+3);t=polar(202,a+3)
-    line([p,q,s,t],'joins')
-    # The shoulder stays quiet; do not cram a miniature alphabet into it.
-
-# Shallow niches and landings at different angles make this a building plan,
-# with stairs arranged around the room, rather than a uniform circular motif.
-for a in [-137,-66,43,127]:
-    line([polar(181,a-5),polar(199,a-5),polar(199,a+5),polar(181,a+5)],'rules')
-    letters_line(polar(192,a-4),polar(192,a+4),7,'ARS MENS')
-for a in [-171,-143,-121,-78,-57,-29,-10,30,83,120,137,160]:
-    line([polar(180,a),polar(184,a)],'joins')
+        # Small, deterministic changes in stroke length follow the hand-drawn
+        # reference without disturbing either protected band of lettering.
+        inner=133+(i%3)*.55
+        outer=177-(i%4)*.65
+        line([polar(inner,a),polar(outer,a+.12*math.sin(i))],'stairs')
 
 # A quiet landing at the top, punctuated by a quill compass rosette.
 cx,cy=polar(153,-133)
