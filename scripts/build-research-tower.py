@@ -99,9 +99,8 @@ letters_line(left_inner,left,14,'INVENIRE')
 letters_line(right,right_inner,14,'AD LVCEM')
 letters_line(left,left_elbow,14,'PER AMBAGES')
 letters_line(right,right_elbow,14,'SCIENTIA')
-line([left,left_elbow,(482,591)],'joins')
-line([right,right_elbow,(548,547)],'joins')
-# A restrained outer passage wall carries its lettering; no stroke crosses ink.
+# The capitals themselves form these walls. A continuous baseline here reads
+# as an underline, so only the short corner returns below receive pen strokes.
 letters_line((460,562),(482,591),10,'ARS')
 letters_line((550,545),(526,512),10,'MENS')
 chamber=[(482,591),(461,624),(482,681),(540,700),(594,680),(615,625),(592,573),(548,547)]
