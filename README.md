@@ -1,29 +1,28 @@
 # Sriraam’s Map
 
-A responsive parchment map that starts folded. Tap the cover or “Mischief Managed” to reveal it; open either side independently, or use “Open fully” for the whole sequence. Once open, drag, pinch, double-tap, scroll, or use the zoom controls to explore. “Fold again” returns to the cover.
+The current preview focuses on **one Research Tower and its entrance**. The previous full estate was rejected for its design and laggy navigation. Folding and the rest of the estate are parked while this individual section is developed.
 
 ## Current implementation
 
-React + TypeScript, Vinext/Vite, CSS 3D transforms, hosted through Sites/Cloudflare. No animation library or Pretext dependency. Local IM Fell English fonts render interface text.
+React 19 + TypeScript, Vinext/Vite, local IM Fell English fonts, hosted through Sites/Cloudflare. No Pretext, Canvas, WebGL, or animation library.
 
-The paper is a continuous twelve-strip sheet: two stationary center strips, five alternating mountain/valley hinges on each side. Each side expands in three stages. A shared SVG drawing is clipped to each front strip; the two illustrated outermost back faces meet to form the cover. Responsive framing follows independent side expansion. Reduced-motion preferences disable the CSS motion.
+The tower composition follows the circular Research Tower in `references/proposals/wide-estate-concept.png`, with unequal stair flights, landings, and an angled entrance. It is an original interpretation, not a pixel-accurate reconstruction of the proposal or film prop.
 
-The unfolded map is **live SVG geometry and lettering**, authored in React/TypeScript. A shared SVG symbol supplies the exact same geometry to each folded leaf and the open map. Walls, pen returns, circular stairs, branching word-canopies, garden beds, water and bridges are separate editable elements. IM Fell English capitals and italic lettering follow measured wall paths; sharp corners use short continuous pen returns instead of squeezing glyphs around the bend. This is an original coded interpretation, not an exact reconstruction of the film prop.
+Architecture uses the previously approved quill glyph kit recovered from commit `f9c25fd`. Some capitals derive from photographed lettering; companion capitals and the cursive kit were authored to match. Glyph contours were simplified at 0.22 kit units (the capitals are 100 units tall), then uniformly scaled and positioned ahead of time. `scripts/build-research-tower.py` combines them into seven vector layers in `app/research/ink.json`. A server component renders those layers once and passes the drawing to the client camera as stable content; the large ink data is excluded from the client JavaScript bundle. The drawing is editable vector geometry, not a generated bitmap or runtime font layout. Labels use the local font.
 
-The Research Tower is substantially larger than the small paired Owlery. The Workshop has an irregular five-bay plan, the Great Hall is a single long buttressed room, and the Library follows a curved wing. The forest has dense word canopies and gnarled trunks; the garden has herb beds, roses, vegetable rows and a glasshouse. Tapping a place opens a short personal note; named footsteps traverse the halls. Voice activation is not implemented.
+The camera owns one fixed-size drawing layer. Pointer, pinch, wheel and keyboard input update a CSS translate/scale transform through one requestAnimationFrame callback. Gestures do not update React state or resize the SVG. Fit and +/- controls provide alternatives. Plain wheel input pans; Ctrl/Command-wheel zooms at the pointer. The page does not mount the older full estate or twelve folded panels. Development-only DOM diagnostics record camera writes; production builds exclude them.
 
-The folded cover remains an illustrated WebP asset. Its built-in image-generation prompt is retained in `references/proposals/implemented-art-prompts.txt`. The earlier flat estate bitmap has been removed from the app. Original vector tracing studies remain available as reference material.
+## Files
 
-## Project layout
-
-- `app/page.tsx`: folding state, phone/desktop framing, controls, and open-map view.
-- `app/folded-map.tsx`: nested hinged paper leaves and front/back textures.
-- `app/fold-geometry.ts`: crease angles, texture indices, and projected bounds.
-- `app/map-camera.ts` and `app/use-map-navigation.ts`: anchored zoom, pan, pointer pinch, and Safari gesture handling.
-- `app/estate/`: authored map geometry, letter metrics, landscape, selectable place outlines and styles.
-- `public/art/`: illustrated folded cover.
-- `references/`: all twelve supplied source images, oriented previews, inspected crops, prompts and concept proposals. Original HEIC files are preserved byte-for-byte; the manifest records checksums. These references are not shipped as website assets.
-- `public/study/`, `app/map-sections/*.json`, and the trace/verification scripts: retained approved vector studies for future lettering work. These no longer appear as app views. Rejected collage layouts and their temporary generated fragments have been removed.
+- `app/page.tsx`: server-composed drawing; `app/research/experience.tsx`: client controls and research note.
+- `app/research/tower.tsx`, `ink.json`: static vector artwork and labels.
+- `app/research/glyphs.json`, `cursive-glyphs.json`: approved lettering kit with simplified contours.
+- `app/research/camera.ts`, `use-camera.ts`: pure camera math and imperative input handling.
+- `scripts/build-research-tower.py`: reproducible tower composition; requires Python and fontTools.
+- `scripts/simplify-quill-kit.py`: optional one-time contour preparation; requires fontTools, OpenCV and NumPy. The committed kit is already prepared.
+- `references/`: all twelve supplied source images, previews, inspected crops, prompts and concept proposals. Original HEIC files remain byte-for-byte; the manifest records checksums. They are not shipped as website assets.
+- `public/study/`, `app/map-sections/`: retained approved photographic vector studies.
+- `app/estate/`, fold and previous camera modules: parked previous implementation, not imported by the current route. Source history retains the whole unfolding experience for later work.
 
 ## Development and verification
 
@@ -35,6 +34,8 @@ npx tsc --noEmit
 npm run build
 ```
 
-The geometry tests cover continuous strip ordering, alternating hinges, framing bounds, glyph fitting, and curved geometry. Camera tests cover pinch bounds and zoom anchoring. Older reference tests check retained vector studies; they do not verify the new illustration. Browser checks cover closed/partial/open states, independent unfolding, automatic opening, refolding, dragging, overview controls, and phone/desktop viewport sizes. Physical touchscreen behavior should also be tried on a real phone.
+Regenerate artwork with `python3 scripts/build-research-tower.py`. The script creates an optional inspection SVG under ignored `outputs/research-tower/`.
+
+Current camera tests verify fit at narrow, landscape and desktop dimensions, pointer anchoring and recoverability after extreme pan. Older tests concern retained studies and parked code, not the current tower's artistic fidelity. Browser checks cover dragging, zoom controls, fit, keyboard and the research note at desktop and phone viewport sizes. Physical phone pinch and device frame rate still need testing on an actual phone. Development camera callback intervals are not a GPU frame-rate benchmark.
 
 Original Marauder’s Map artwork belongs to its respective rights holders. Reference images were supplied by the user.
