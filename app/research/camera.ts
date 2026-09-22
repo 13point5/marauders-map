@@ -1,7 +1,7 @@
 export type Camera = { x: number; y: number; scale: number };
 export type Point = { x: number; y: number };
-export const ART_WIDTH = 730,
-  ART_HEIGHT = 780;
+export const ART_WIDTH = 1200,
+  ART_HEIGHT = 960;
 export function fitCamera(width: number, height: number): Camera {
   const scale = Math.min(width / ART_WIDTH, height / ART_HEIGHT) * 0.96;
   return {

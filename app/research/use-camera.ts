@@ -14,7 +14,11 @@ export function useCamera(
   view: RefObject<HTMLDivElement | null>,
   art: RefObject<HTMLDivElement | null>,
 ) {
-  const actions = useRef({ fit: () => {}, zoom: (_factor: number) => {} });
+  const actions = useRef({
+    fit: () => {},
+    zoom: (_factor: number) => {},
+    focus: (_point: Point, _span: number) => {},
+  });
   useEffect(() => {
     const viewport = view.current,
       layer = art.current;
@@ -23,6 +27,7 @@ export function useCamera(
       height = viewport.clientHeight;
     let base = fitCamera(width, height),
       camera: Camera = base;
+    let settleTimer: ReturnType<typeof setTimeout>;
     let frame = 0,
       suppressUntil = 0,
       dragged = false;
@@ -35,11 +40,17 @@ export function useCamera(
     const local = (p: Point) => ({ x: p.x - rect.left, y: p.y - rect.top });
     const paint = () => {
       frame = 0;
-      layer.style.transform = `translate3d(${camera.x}px,${camera.y}px,0) scale(${camera.scale})`;
+      layer.style.willChange = 'transform';
+      layer.style.transform = `translate(${camera.x}px,${camera.y}px) scale(${camera.scale})`;
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => {
+        layer.style.willChange = 'auto';
+      }, 140);
       if (process.env.NODE_ENV === 'development') {
         const now = performance.now();
         if (lastFrame && now - lastFrame < 100)
           frameIntervals.push(now - lastFrame);
+        if (frameIntervals.length > 120) frameIntervals.shift();
         lastFrame = now;
         layer.dataset.cameraPaints = String(++paintCount);
         layer.dataset.cameraFrameIntervals = JSON.stringify(
@@ -70,7 +81,23 @@ export function useCamera(
       );
       schedule();
     };
-    actions.current = { fit, zoom };
+    const focus = (point: Point, span: number) => {
+      const scale = Math.max(
+        base.scale,
+        Math.min(base.scale * 5, Math.min(width * 0.68, height * 0.6) / span),
+      );
+      camera = boundCamera(
+        {
+          scale,
+          x: width * (width > 700 ? 0.37 : 0.5) - point.x * scale,
+          y: height * (width > 700 ? 0.5 : 0.29) - point.y * scale,
+        },
+        width,
+        height,
+      );
+      schedule();
+    };
+    actions.current = { fit, zoom, focus };
     const pair = () => {
       const [a, b] = [...pointers.values()];
       return {
@@ -228,6 +255,7 @@ export function useCamera(
     return () => {
       resize.disconnect();
       cancelAnimationFrame(frame);
+      clearTimeout(settleTimer);
       viewport.removeEventListener('pointerdown', down);
       viewport.removeEventListener('pointermove', move);
       viewport.removeEventListener('pointerup', up);
@@ -245,5 +273,6 @@ export function useCamera(
   return {
     fit: () => actions.current.fit(),
     zoom: (factor: number) => actions.current.zoom(factor),
+    focus: (point: Point, span: number) => actions.current.focus(point, span),
   };
 }

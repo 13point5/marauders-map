@@ -1,10 +1,9 @@
 import MapExperience from './research/experience';
-import { TowerDrawing } from './research/tower';
-
+import { CastleDrawing } from './castle/drawing';
 export default function Page() {
   return (
     <MapExperience>
-      <TowerDrawing />
+      <CastleDrawing />
     </MapExperience>
   );
 }

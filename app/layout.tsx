@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
 export const metadata: Metadata = {
-  title: 'Sriraam’s Map · Research Tower',
+  title: 'Sriraam’s Map · The Castle',
   icons: { icon: '/favicon.svg' },
   description:
-    'Explore the Research Tower, the first section of Sriraam’s letter-built parchment map. Drag, pan and zoom into the quill-drawn architecture.',
+    'Explore Sriraam’s castle: a Great Hall, Research Tower, and growing rooms for ideas, writing and work. Pan, zoom, and tap a room.',
 };
 export default function RootLayout({
   children,
