@@ -2,7 +2,7 @@
 
 The main route is a connected, pannable **quill-letter castle**, following the main-building arrangement in `references/proposals/wide-estate-concept.png`: Research Tower northwest, Great Hall in the middle, curved Library northeast, Common Room and substantial Workshop below, and a smaller paired Owlery to the east. The Entrance Court and small western rooms connect the wings. Seven destinations are clickable. Folding and the main map's grounds remain outside this castle pass.
 
-`/concept` is a separate comparison experience preserving the complete generated concept, including its grounds. The original image is the exact composition; optional restored artwork and a closer castle study are image-based alternatives, not the editable vector castle. See its provenance file in `references/proposals/` for actual image sizes and generation limitations.
+`/concept` focuses on the main castle only. Its default clean-ink drawing is a 1536 × 1024 generated illustration with six clickable destinations; an earlier castle drawing remains available for comparison. It reuses the same gesture camera and room content as the vector map. The new WebP is lossless, preserving the generated pixels. This is raster artwork, not infinitely scalable vector geometry or a 4K master. See `references/proposals/concept-version-provenance.md` for prompts and dimensions.
 
 ## Implementation
 

@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import ConceptExperience from './experience';
 
 export const metadata: Metadata = {
-  title: 'Sriraam’s Map · Illustrated concept',
+  title: 'Sriraam’s Map · Illustrated castle',
   description:
-    'Explore the original illustrated estate, a restored comparison, and a detailed castle study.',
+    'Explore the illustrated castle in clean ink: six connected destinations, sharp architectural details, and a draggable, zoomable map.',
 };
 export default function ConceptPage() {
   return <ConceptExperience />;

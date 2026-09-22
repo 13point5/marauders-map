@@ -3,7 +3,7 @@
   height: 100dvh;
   min-height: 320px;
   overflow: hidden;
-  background: #e8dfc9;
+  background: #f4efdf;
   color: #3d2b1e;
 }
 .concept-header {
@@ -47,7 +47,7 @@
   transform: translateX(-50%);
   display: flex;
   gap: 4px;
-  background: #ece3cfeb;
+  background: #f4efdfef;
   padding: 4px;
   border: 1px solid #4d33252b;
   border-radius: 4px;
@@ -91,7 +91,6 @@
 .concept-sheet {
   position: absolute;
   left: 0;
-  box-shadow: 0 5px 30px #5033182a;
 }
 .concept-sheet img {
   display: block;
@@ -124,7 +123,7 @@
   width: 300px;
   max-height: calc(100dvh - 210px);
   overflow: auto;
-  background: #eee4ceef;
+  background: #f8f3e7;
   padding: 30px;
   box-shadow: 0 5px 35px #58351f26;
   border: 1px solid #6b432c40;
@@ -168,20 +167,10 @@
   gap: 15px;
   pointer-events: none;
 }
-.concept-footer p {
-  font-size: 14px;
-  margin: 0;
-  line-height: 1.5;
-}
-.concept-footer p span {
-  display: block;
-  opacity: 0.65;
-  font-size: 12px;
-}
 .concept-footer nav {
   pointer-events: auto;
   display: flex;
-  background: #ece3cfe8;
+  background: #f4efdfef;
   border: 1px solid #593d272b;
   border-radius: 4px;
   padding: 3px;
@@ -231,13 +220,6 @@
     bottom: max(14px, env(safe-area-inset-bottom));
     align-items: center;
   }
-  .concept-footer p {
-    font-size: 11px;
-    max-width: 190px;
-  }
-  .concept-footer p span {
-    font-size: 10px;
-  }
   .concept-footer button {
     padding: 0 7px;
   }
@@ -281,5 +263,41 @@
     max-height: none;
     transform: none;
     padding: 20px;
+  }
+}
+
+.concept-room-picker {
+  pointer-events: auto;
+}
+.concept-room-picker select {
+  font: inherit;
+  color: inherit;
+  background: #f4efdfef;
+  border: 1px solid #593d272b;
+  border-radius: 4px;
+  min-height: 50px;
+  max-width: 210px;
+  padding: 8px 12px;
+}
+.concept-note a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  min-height: 44px;
+  font-size: 15px;
+  text-underline-offset: 4px;
+}
+.concept-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+@media (max-width: 700px) {
+  .concept-room-picker select {
+    max-width: 165px;
+    font-size: 14px;
   }
 }

@@ -1,106 +1,43 @@
 'use client';
-/* oxlint-disable jsx-a11y/no-noninteractive-tabindex -- This map application supports keyboard pan and zoom. */
-/* oxlint-disable next/no-img-element -- The zoomable illustration uses its full source resolution; resizing to the initial viewport would blur zoomed detail. */
+/* oxlint-disable jsx-a11y/no-noninteractive-tabindex -- The map application supports keyboard pan and zoom. */
+/* oxlint-disable next/no-img-element -- Use the illustration's full resolution rather than an image optimized for the small initial viewport. */
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Minus, Plus, Scan, X, ArrowLeft } from 'lucide-react';
+import { Minus, Plus, Scan, X, ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { useCamera } from '../research/use-camera';
 import { ART_WIDTH, ART_HEIGHT } from '../research/camera';
+import { rooms } from '../castle/plan';
 import './concept.css';
 
 const views = {
+  clean: { label: 'Clean ink', src: '/art/concept-castle-clean.webp' },
   original: {
-    label: 'Original',
-    src: '/art/concept-original.webp',
-    height: 1600 / 3,
-  },
-  restored: {
-    label: 'Restored',
-    src: '/art/concept-restored.webp',
-    height: 1600 / 3,
-  },
-  detail: {
-    label: 'Castle detail',
+    label: 'Earlier drawing',
     src: '/art/concept-castle-detail.webp',
-    height: (1600 * 2) / 3,
   },
 };
 type View = keyof typeof views;
+const IMAGE_HEIGHT = (ART_WIDTH * 2) / 3;
+// Percentages in the dedicated castle illustration, not the earlier estate.
 const places = [
-  {
-    name: 'The Dark Forest',
-    x: 8,
-    y: 34,
-    w: 19,
-    h: 33,
-    text: 'An untamed edge to the estate, with branching paths and dense pools of ink.',
-  },
-  {
-    name: 'Research Tower',
-    x: 40,
-    y: 9,
-    w: 7,
-    h: 18,
-    text: 'A circular home for research interests and investigations, connected to the Great Hall.',
-  },
-  {
-    name: 'The Great Hall',
-    x: 45,
-    y: 20,
-    w: 11,
-    h: 28,
-    text: 'The heart of the castle: a place to introduce Sriraam and find the surrounding rooms.',
-  },
-  {
-    name: 'The Library',
-    x: 62,
-    y: 13,
-    w: 10,
-    h: 24,
-    text: 'A curved wing for writing and reading, with smaller chambers that can grow as the collection grows.',
-  },
-  {
-    name: 'The Workshop',
-    x: 62,
-    y: 52,
-    w: 6,
-    h: 18,
-    text: 'A working wing for projects and experiments, with room to extend around its courtyard.',
-  },
-  {
-    name: 'The Common Room',
-    x: 53,
-    y: 65,
-    w: 7,
-    h: 15,
-    text: 'A quieter room for personal interests, stories, and the things between projects.',
-  },
-  {
-    name: 'The Owlery',
-    x: 70,
-    y: 47,
-    w: 5,
-    h: 11,
-    text: 'A small pair of turrets for finding Sriraam elsewhere and getting in touch.',
-  },
-  {
-    name: 'The Garden',
-    x: 80,
-    y: 49,
-    w: 14,
-    h: 27,
-    text: 'An open garden of paths, varied planting beds, and quieter places beyond the castle.',
-  },
-];
+  { id: 'research', x: 12, y: 5, w: 18, h: 23 },
+  { id: 'hall', x: 28, y: 27, w: 20, h: 22 },
+  { id: 'library', x: 57, y: 11, w: 29, h: 24 },
+  { id: 'workshop', x: 61, y: 59, w: 15, h: 19 },
+  { id: 'common', x: 41, y: 72, w: 14, h: 14 },
+  { id: 'owlery', x: 80, y: 48, w: 13, h: 18 },
+].map((place) => ({
+  ...place,
+  room: rooms.find((room) => room.id === place.id)!,
+}));
+type Place = (typeof places)[number];
 
 export default function ConceptExperience() {
   const viewport = useRef<HTMLDivElement>(null);
   const artwork = useRef<HTMLDivElement>(null);
   const camera = useCamera(viewport, artwork);
-  const [view, setView] = useState<View>('original');
-  const [selected, setSelected] = useState<(typeof places)[number] | null>(
-    null,
-  );
+  const [view, setView] = useState<View>('clean');
+  const [selected, setSelected] = useState<Place | null>(null);
   const image = views[view];
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
@@ -109,10 +46,17 @@ export default function ConceptExperience() {
     window.addEventListener('keydown', close);
     return () => window.removeEventListener('keydown', close);
   }, []);
-  const changeView = (next: View) => {
-    setView(next);
-    setSelected(null);
-    camera.fit();
+  const openRoom = (place: Place) => {
+    setSelected(place);
+    camera.focus(
+      {
+        x: ((place.x + place.w / 2) * ART_WIDTH) / 100,
+        y:
+          (ART_HEIGHT - IMAGE_HEIGHT) / 2 +
+          ((place.y + place.h / 2) * IMAGE_HEIGHT) / 100,
+      },
+      Math.max((place.w * ART_WIDTH) / 100, 280),
+    );
   };
   return (
     <main className="concept-experience">
@@ -120,28 +64,28 @@ export default function ConceptExperience() {
         <Link
           href="/"
           className="concept-back"
-          aria-label="Back to drawn castle"
+          aria-label="Back to quill-letter castle"
         >
           <ArrowLeft size={18} />
-          <span>Drawn castle</span>
+          <span>Quill version</span>
         </Link>
         <div className="concept-title">
-          The illustrated estate<span>Concept version</span>
+          Sriraam’s Castle<span>Drag · pinch · explore</span>
         </div>
         <a
           className="concept-download"
           href={image.src.replace('.webp', '.png')}
           download
         >
-          Save image
+          Save drawing
         </a>
       </header>
-      <nav className="concept-tabs" aria-label="Compare concept images">
+      <nav className="concept-tabs" aria-label="Compare castle drawings">
         {(Object.keys(views) as View[]).map((key) => (
           <button
             key={key}
             aria-pressed={view === key}
-            onClick={() => changeView(key)}
+            onClick={() => setView(key)}
           >
             {views[key].label}
           </button>
@@ -152,7 +96,7 @@ export default function ConceptExperience() {
         ref={viewport}
         role="application"
         tabIndex={0}
-        aria-label="Illustrated estate. Drag to pan, pinch or Control-scroll to zoom. Arrow keys pan, zero fits. Tap a named region to explore."
+        aria-label="Castle. Drag to pan, pinch or Control-scroll to zoom. Arrow keys pan, zero fits. Tap a room to explore."
       >
         <div
           className="concept-layer"
@@ -162,85 +106,85 @@ export default function ConceptExperience() {
           <div
             className="concept-sheet"
             style={{
-              top: (ART_HEIGHT - image.height) / 2,
+              top: (ART_HEIGHT - IMAGE_HEIGHT) / 2,
               width: ART_WIDTH,
-              height: image.height,
+              height: IMAGE_HEIGHT,
             }}
           >
             <img
               src={image.src}
-              width={1600}
-              height={image.height}
-              alt={
-                view === 'detail'
-                  ? 'Detailed illustrated castle with Research Tower, Great Hall, Library, Workshop, Common Room, and Owlery.'
-                  : 'Wide parchment estate: dark forest to the left, an angled castle with circular towers in the middle, garden to the right, and a river along the bottom.'
-              }
+              width={1536}
+              height={1024}
+              alt="The complete castle: Research Tower northwest, Great Hall in the middle, Library northeast, Owlery east, Workshop southeast and Common Room south."
               draggable={false}
+              fetchPriority="high"
             />
-            {view !== 'detail' &&
-              places.map((place) => (
-                <button
-                  key={place.name}
-                  className="concept-region"
-                  aria-label={`Explore ${place.name}`}
-                  aria-pressed={selected?.name === place.name}
-                  style={{
-                    left: `${place.x}%`,
-                    top: `${place.y}%`,
-                    width: `${place.w}%`,
-                    height: `${place.h}%`,
-                  }}
-                  onClick={() => {
-                    setSelected(place);
-                    camera.focus(
-                      {
-                        x: (place.x + place.w / 2) * 16,
-                        y:
-                          (ART_HEIGHT - image.height) / 2 +
-                          ((place.y + place.h / 2) * image.height) / 100,
-                      },
-                      Math.max(place.w * 16, 260),
-                    );
-                  }}
-                />
-              ))}
+            {places.map((place) => (
+              <button
+                key={place.id}
+                className="concept-region"
+                aria-label={`Explore ${place.room.name}`}
+                aria-pressed={selected?.id === place.id}
+                style={{
+                  left: `${place.x}%`,
+                  top: `${place.y}%`,
+                  width: `${place.w}%`,
+                  height: `${place.h}%`,
+                }}
+                onClick={() => openRoom(place)}
+              />
+            ))}
           </div>
         </div>
       </div>
       {selected && (
-        <aside className="concept-note" aria-label={selected.name}>
+        <aside className="concept-note" aria-label={selected.room.name}>
           <button
             className="concept-close"
-            aria-label="Close region"
+            aria-label="Close room"
             onClick={() => setSelected(null)}
           >
             <X size={20} />
           </button>
-          <span>A place on the map</span>
-          <h1>{selected.name}</h1>
-          <p>{selected.text}</p>
+          <span>{selected.room.kind}</span>
+          <h1>{selected.room.name}</h1>
+          <p>{selected.room.body}</p>
+          <a href={selected.room.link} target="_blank" rel="noreferrer">
+            {selected.room.linkLabel}
+            <ArrowUpRight size={16} />
+          </a>
         </aside>
       )}
       <footer className="concept-footer">
-        <p>
-          {view === 'original'
-            ? 'The original illustration · 2172 × 724'
-            : view === 'restored'
-              ? 'AI-restored ink · 2172 × 724'
-              : 'AI-enlarged castle study · 1536 × 1024'}
-          <span>
-            {view === 'detail'
-              ? 'Fine details are reinterpreted; compare with Original.'
-              : 'Drag to wander · pinch to zoom'}
-          </span>
-        </p>
-        <nav aria-label="Concept zoom">
+        <label className="concept-room-picker">
+          <span className="concept-sr-only">Go to a castle room</span>
+          <select
+            value={selected?.id ?? ''}
+            onChange={(event) => {
+              const place = places.find(
+                (place) => place.id === event.target.value,
+              );
+              if (place) openRoom(place);
+              else {
+                setSelected(null);
+                camera.fit();
+              }
+            }}
+          >
+            <option value="">Explore a room</option>
+            {places.map((place) => (
+              <option key={place.id} value={place.id}>
+                {place.room.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <nav aria-label="Castle zoom">
           <button aria-label="Zoom out" onClick={() => camera.zoom(1 / 1.4)}>
             <Minus size={19} />
           </button>
           <button
-            aria-label="Fit concept"
+            aria-label="Fit castle"
             onClick={() => {
               setSelected(null);
               camera.fit();
