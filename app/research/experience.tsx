@@ -4,7 +4,13 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Minus, Plus, Scan, X, ArrowUpRight } from 'lucide-react';
 import { useCamera } from './use-camera';
 import { ART_WIDTH, ART_HEIGHT } from './camera';
-import { rooms, mapPoint, PLAN_ANGLE, type Room } from '../castle/plan';
+import {
+  rooms,
+  mapPoint,
+  PLAN_ANGLE,
+  PLAN_ORIGIN,
+  type Room,
+} from '../castle/plan';
 import './research.css';
 export default function MapExperience({ children }: { children: ReactNode }) {
   const viewport = useRef<HTMLDivElement>(null),
@@ -30,7 +36,9 @@ export default function MapExperience({ children }: { children: ReactNode }) {
       <header className="tower-header">
         <div>
           <span className="site-name">Sriraam’s Map</span>
-          <span className="chapter">The castle · first wing</span>
+          <span className="chapter">
+            <a href="/concept">Compare illustrated concept ↗</a>
+          </span>
         </div>
         <label className="room-picker">
           <span className="sr-only">Go to a room</span>
@@ -70,7 +78,10 @@ export default function MapExperience({ children }: { children: ReactNode }) {
           {children}
           <div
             className="room-regions"
-            style={{ transform: `rotate(${PLAN_ANGLE}deg)` }}
+            style={{
+              transform: `rotate(${PLAN_ANGLE}deg)`,
+              transformOrigin: `${PLAN_ORIGIN.x}px ${PLAN_ORIGIN.y}px`,
+            }}
           >
             {rooms.map((room) => (
               <button

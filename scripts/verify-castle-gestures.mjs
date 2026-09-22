@@ -64,8 +64,9 @@ await click('Fit castle');
 for (const room of [
   'The Great Hall',
   'Research Tower',
-  'The Study',
-  'Field Notes',
+  'The Library',
+  'The Common Room',
+  'The Owlery',
   'The Workshop',
   'Entrance Court',
 ]) {
@@ -81,7 +82,7 @@ for (const room of [
   await click('Fit castle');
 }
 console.log(
-  'All six room links open the matching note. No phone page overflow.',
+  'All seven room links open the matching note. No phone page overflow.',
 );
 await send('Emulation.setTouchEmulationEnabled', {
   enabled: true,

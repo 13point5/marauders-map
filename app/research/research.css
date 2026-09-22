@@ -92,7 +92,6 @@
 .room-regions {
   position: absolute;
   inset: 0;
-  transform-origin: 600px 450px;
   pointer-events: none;
 }
 .room-hotspot {
@@ -209,98 +208,18 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.wall-edge {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 10;
-}
-.wall-core {
-  fill: none;
-  stroke: #e9dab8;
-  stroke-width: 6.5;
-}
-.wall-hatch {
-  fill: none;
-  stroke: url(#stone-hatching);
-  stroke-width: 6.5;
-}
-.thin-rule,
-.steps,
-.pillars,
-.door-swing,
-.dais,
-.furniture,
-.compass {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.15;
-}
-.stair-stroke {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.2;
-}
-.floor-wash {
-  fill: #b8893810;
-}
-.fine-rule,
-.windows {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 0.7;
-}
-.door-swing {
-  opacity: 0.6;
-  stroke-width: 0.8;
-}
-.furniture {
-  stroke-width: 0.85;
-}
-.room-label {
+.castle-label,
+.map-marginalia {
   fill: currentColor;
-}
-.latin-label {
-  font-size: 10px;
-  letter-spacing: 2.2px;
-  fill: #7b5d3c;
 }
 .script-note {
   font-size: 13px;
   font-style: italic;
   fill: #7c5c3a;
 }
-.room-number {
-  font-size: 12px;
-  fill: #7c5c3a;
-  letter-spacing: 2px;
-}
-.corridor-label {
-  font-size: 9px;
-  letter-spacing: 1.4px;
-  fill: #826445;
-}
-.wall-glyph {
-  font-size: 10px;
-  fill: currentColor;
-}
-.marginal {
-  opacity: 0.75;
-  font-size: 12px;
-}
-.approach {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1;
-  opacity: 0.4;
-  stroke-dasharray: 3 5;
-}
-.survey-lines {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 0.55;
-  opacity: 0.12;
-}
 .compass {
+  fill: none;
+  stroke: currentColor;
   opacity: 0.45;
   stroke-width: 0.7;
 }

@@ -37,3 +37,6 @@ next-env.d.ts
 /outputs/
 /work/
 *.tsbuildinfo
+
+# Python authoring tools
+__pycache__/

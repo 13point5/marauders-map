@@ -1,39 +1,42 @@
 # Sriraam’s Map
 
-The current preview is **one connected castle wing**: a Great Hall, Research Tower, Study, Field Notes room, small Workshop and Entrance Court. It is a whole pannable map with clickable rooms. Folding, forest, gardens and the full estate are outside the current scope.
+The main route is a connected, pannable **quill-letter castle**, following the main-building arrangement in `references/proposals/wide-estate-concept.png`: Research Tower northwest, Great Hall in the middle, curved Library northeast, Common Room and substantial Workshop below, and a smaller paired Owlery to the east. The Entrance Court and small western rooms connect the wings. Seven destinations are clickable. Folding and the main map's grounds remain outside this castle pass.
 
-## Current implementation
+`/concept` is a separate comparison experience preserving the complete generated concept, including its grounds. The original image is the exact composition; optional restored artwork and a closer castle study are image-based alternatives, not the editable vector castle. See its provenance file in `references/proposals/` for actual image sizes and generation limitations.
 
-React 19 + TypeScript, Vinext/Vite, SVG, local IM Fell English fonts and native pointer events, hosted through Sites/Cloudflare. No Pretext, Canvas, WebGL or animation library.
+## Implementation
 
-The architectural direction follows `references/proposals/wide-estate-concept.png`: an angled plan, masonry outlines, buttresses, door openings, unequal room footprints and selective lettering. The Research Tower reuses the approved quill-letter drawing intact, with its cursive rings, stair flights and angled vestibule. This is an original coded interpretation, not an exact reconstruction of the film prop. The tower’s letter contours are precomputed vector paths, not browser font layout.
+React 19 + TypeScript, Vinext/Vite, SVG, local IM Fell English labels and native pointer events, hosted through Sites/Cloudflare. No Pretext, Canvas, WebGL or animation library.
 
-`app/castle/drawing.tsx` renders the architecture on the server and passes it as stable content into the client map. `app/castle/plan.ts` defines room identities, hit regions, camera targets and personal content from sriraam.me. Rooms can be added or enlarged by editing their geometry and matching metadata; automatic room growth and a content editor are not implemented.
+The restored Research Tower artwork remains unchanged. The rest of the castle uses its same approved capital and cursive glyph contours. `scripts/quill.py` holds the shared offline lettering primitives; the tower and castle generators compose geometry ahead of time. Each glyph is uniformly scaled, not stretched along a wall. Short pen returns occupy corners; no continuous baselines underline the letter-built walls.
 
-The camera updates one fixed-size drawing layer through requestAnimationFrame. Gestures do not update React state or resize the SVG. Temporary compositor promotion during movement is released after 140 ms of inactivity so zoomed vector ink is rerasterized sharply. Drag pans; touch pinch or Ctrl/Command-wheel zooms around the gesture; plain wheel pans. Keyboard arrows, +/- and zero provide alternatives. The room picker focuses a destination; its note appears to the side on desktop and below on phones.
+The castle's six vector layers are served as one cacheable SVG resource. This keeps several megabytes of repeated glyph outlines out of React's HTML/RSC stream and lets controls initialize promptly. The artwork remains vector geometry; it is not a generated bitmap. `app/castle/plan.ts` supplies room identities, hit regions, camera targets and personal content. Geometry and metadata can be extended with new rooms; automatic content-driven building growth is not implemented.
 
-## Files
+The camera updates one fixed-size drawing layer through requestAnimationFrame. Gestures do not update React state or resize the SVG. Temporary compositor promotion during movement is released after 140ms of inactivity so zoomed ink is rerasterized sharply. Drag pans; touch pinch or Ctrl/Command-wheel zooms at the gesture; plain wheel pans. Keyboard arrows, +/- and zero provide alternatives. The room picker focuses a destination; its note appears beside the map on desktop and below on phones.
 
-- `app/page.tsx`: current server-composed route.
-- `app/castle/drawing.tsx`, `plan.ts`: castle artwork and room content.
-- `app/research/experience.tsx`, `research.css`: reused map interface and responsive styling.
-- `app/research/camera.ts`, `use-camera.ts`: camera math and gesture handling.
-- `app/research/tower.tsx`, `ink.json`, glyph kits and `scripts/build-research-tower.py`: approved quill tower; its server-rendered drawing is reused by the castle.
-- `references/`: supplied originals, previews, inspected crops and concept proposals. HEIC originals remain byte-for-byte, with checksums in the manifest. These are not shipped as website assets.
-- `public/study/`, `app/map-sections/`: retained approved photographic vector studies.
-- `app/estate/`, fold and older camera modules: parked prior implementations, not mounted by the current route.
+## Key files
 
-## Development and verification
+- `app/castle/drawing.tsx`, `plan.ts`: map composition, labels and room content.
+- `public/art/castle-ink.svg`: generated capital/cursive architecture.
+- `scripts/build-castle.py`, `scripts/quill.py`: reproducible castle geometry and shared approved lettering primitives.
+- `app/research/tower.tsx`, `ink.json`, glyph kits and `scripts/build-research-tower.py`: unchanged approved tower and its generator.
+- `app/research/experience.tsx`, `research.css`, `camera.ts`, `use-camera.ts`: reused interface and gesture handling.
+- `app/concept/`, `public/art/concept-*`: separate concept comparison.
+- `references/`: supplied originals, previews, crops and concept proposals. HEIC originals remain byte-for-byte, with checksums in the manifest; these are not website assets.
+- `public/study/`, `app/map-sections/`, `app/estate/`, older fold/camera modules: retained studies and parked implementations; not mounted by the current route.
+
+## Development
 
 ```sh
 npm install
 npm run dev
-npm run lint
 npm run test:map
 npx tsc --noEmit
 npm run build
 ```
 
-Camera tests verify fit at phone, landscape and desktop dimensions, pointer anchoring and recovery after extreme pan. The rest of the 22 tests concern retained studies and parked code. Browser checks cover all six room notes, narrow-phone overflow, actual emulated two-touch input, continuous touch drags from rooms and empty paper, mouse dragging, zoom controls and keyboard panning. Browser touch emulation is not a physical iPhone frame-rate test. `scripts/verify-castle-gestures.mjs` accepts the CDP websocket URL returned by `agent-browser get cdp-url` and checks full gesture displacement, including the implicit pointer-capture handoff that previously ended drags after their first movement.
+Regenerate vector architecture with `python3 scripts/build-castle.py` (requires fontTools). The shared primitive extraction was verified to reproduce the approved tower's committed ink data byte-for-byte.
+
+The 22 existing tests cover camera fit/anchoring and retained studies. `scripts/verify-castle-gestures.mjs` accepts the CDP websocket URL from `agent-browser get cdp-url` and checks the current seven room notes, phone overflow, pinch, mouse dragging and continuous touch dragging from rooms and empty paper. It asserts full gesture displacement, protecting the capture-transfer fix that previously let drags stop after their first movement. Browser emulation is not a physical-phone frame-rate test.
 
 Original Marauder’s Map artwork belongs to its respective rights holders. Reference photographs were supplied by the user.
