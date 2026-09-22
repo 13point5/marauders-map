@@ -5,6 +5,8 @@ export function TowerDrawing() {
     <svg
       className="tower-drawing"
       viewBox="0 0 730 780"
+      width="730"
+      height="780"
       aria-label="Research Tower: quill-letter walls, six stair flights and an angled entrance vestibule"
       role="img"
     >

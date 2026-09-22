@@ -390,3 +390,8 @@
     padding-bottom: 4px;
   }
 }
+
+.tower-drawing {
+  overflow: visible;
+  fill: currentColor;
+}

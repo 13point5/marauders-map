@@ -1,5 +1,6 @@
 /* oxlint-disable jsx-a11y/prefer-tag-over-role -- Named inline vector drawing; clickable HTML room regions are supplied by the map interface. */
 import { PLAN_ANGLE } from './plan';
+import { TowerDrawing } from '../research/tower';
 
 function Wall({ d }: { d: string }) {
   return (
@@ -67,16 +68,6 @@ function Label({
     </g>
   );
 }
-const point = (r: number, a: number) => [
-  +(284 + r * Math.cos((a * Math.PI) / 180)).toFixed(2),
-  +(234 + r * Math.sin((a * Math.PI) / 180)).toFixed(2),
-];
-const towerStairs = [
-  [-151, -119, 10],
-  [-40, -12, 8],
-  [87, 116, 9],
-];
-
 export function CastleDrawing() {
   return (
     <svg
@@ -133,53 +124,12 @@ export function CastleDrawing() {
             fill="url(#court-paving)"
           />
         </g>
-        {/* Broad landings and three short flights; geometric tower walls. */}
-        <Wall d="M385 264A105 105 0 1 0 364 302" />
-        <path className="thin-rule" d="M378 262A98 98 0 1 0 360 296" />
-        <path className="thin-rule" d="M354 257A74 74 0 1 0 337 286" />
-        {towerStairs.flatMap(([a, b, n], j) =>
-          Array.from({ length: n + 1 }, (_, i) => {
-            const p = point(78, a + ((b - a) * i) / n),
-              q = point(94, a + ((b - a) * i) / n);
-            return (
-              <path
-                key={`${j}-${i}`}
-                className="stair-stroke"
-                d={`M${p.join(' ')}L${q.join(' ')}`}
-              />
-            );
-          }),
-        )}
-        {[
-          [-88, 21],
-          [165, -8],
-          [78, 13],
-        ].map(([a, rot], i) => {
-          const [x, y] = point(87, a);
-          return (
-            <text
-              key={i}
-              x={x}
-              y={y}
-              transform={`rotate(${a + 90 + rot} ${x} ${y})`}
-              className="wall-glyph"
-            >
-              {['A', 'M', 'R'][i]}
-            </text>
-          );
-        })}
-        <Wall d="M385 264H437L465 264M364 302H437L465 302" />
-        <path className="door-swing" d="M415 266v32q25 0 25-32" />
-        <Label
-          x={284}
-          y={230}
-          title="Research Tower"
-          small
-          latin="TVRRIS · I"
-        />
-        <text className="script-note" x="241" y="271">
-          quaerere &amp; invenire
-        </text>
+        {/* Reuse the approved quill tower intact, including its vestibule. */}
+        <g transform="translate(50 -40) scale(0.5479452055)">
+          <TowerDrawing />
+        </g>
+        <Wall d="M374.38 273.97L420 264H465M386.99 302.47H465" />
+        <path className="door-swing" d="M430 268v31q25 0 25-35" />
         {/* Great Hall and its buttresses; unequal doorways connect actual rooms. */}
         <Wall d="M465 264V245H800L845 290V355M845 393V497L800 545H700M662 545H465V405M465 365V302" />
         <path

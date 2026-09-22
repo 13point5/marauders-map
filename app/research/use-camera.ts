@@ -152,6 +152,12 @@ export function useCamera(
       origin = [...pointers.values()][0] ?? null;
       if (!pointers.size) viewport.classList.remove('is-dragging');
     };
+    // Touch starts with implicit capture on the room button or drawing layer.
+    // Transferring that capture to the viewport emits a bubbling loss event
+    // from the old target. It must not end the still-active viewport gesture.
+    const lostCapture = (event: PointerEvent) => {
+      if (event.target === viewport) up(event);
+    };
     const wheel = (event: WheelEvent) => {
       event.preventDefault();
       rect = viewport.getBoundingClientRect();
@@ -242,7 +248,7 @@ export function useCamera(
     viewport.addEventListener('pointermove', move, { passive: false });
     viewport.addEventListener('pointerup', up);
     viewport.addEventListener('pointercancel', up);
-    viewport.addEventListener('lostpointercapture', up);
+    viewport.addEventListener('lostpointercapture', lostCapture);
     viewport.addEventListener('wheel', wheel, { passive: false });
     viewport.addEventListener('click', click, true);
     viewport.addEventListener('dblclick', double);
@@ -260,7 +266,7 @@ export function useCamera(
       viewport.removeEventListener('pointermove', move);
       viewport.removeEventListener('pointerup', up);
       viewport.removeEventListener('pointercancel', up);
-      viewport.removeEventListener('lostpointercapture', up);
+      viewport.removeEventListener('lostpointercapture', lostCapture);
       viewport.removeEventListener('wheel', wheel);
       viewport.removeEventListener('click', click, true);
       viewport.removeEventListener('dblclick', double);
